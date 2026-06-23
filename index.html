@@ -1,0 +1,1353 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#ffffff" id="themeMeta">
+<title>Xentra Finance</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overscroll-behavior:none;}
+body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var(--tx);transition:background .3s,color .3s;}
+:root{
+  --bg:#fff;--bg2:#fff;--bg3:#F1F2F6;--bg4:#E7E9F1;
+  --tx:#0B0E16;--tx2:#6B7080;--tx3:#9CA1B0;
+  --blue:#2563EB;--bdim:rgba(37,99,235,.10);
+  --gtext:#0FA968;--rtext:#D2123F;--red:#E11D48;
+  --shadow-lg:0 16px 48px rgba(15,23,42,.14);
+  --nav:#2A1FE0;--gold:#F4B728;
+}
+[data-theme="dark"]{
+  --bg:#0A0C12;--bg2:#13151E;--bg3:#1B1E2A;--bg4:#252938;
+  --tx:#F3F5FA;--tx2:#9095AC;--tx3:#565C75;
+  --bdim:rgba(59,130,246,.16);
+  --gtext:#34D873;--rtext:#FB4570;
+  --shadow-lg:0 16px 48px rgba(0,0,0,.6);
+  --nav:#5B4DFF;
+}
+.app{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden;max-width:560px;margin:0 auto;position:relative;}
+
+/* ── AUTH SCREEN ── */
+.auth-screen{position:fixed;inset:0;background:var(--bg);z-index:1000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px;max-width:560px;margin:0 auto;}
+.auth-logo{font-size:32px;font-weight:900;color:var(--tx);letter-spacing:-.03em;margin-bottom:8px;}
+.auth-logo span{color:var(--nav);}
+.auth-sub{font-size:14px;color:var(--tx2);margin-bottom:40px;}
+.auth-tabs{display:flex;background:var(--bg3);border-radius:16px;padding:4px;margin-bottom:28px;width:100%;}
+.auth-tab{flex:1;padding:10px;text-align:center;font-size:14px;font-weight:700;border:none;background:none;color:var(--tx3);cursor:pointer;border-radius:12px;font-family:'Inter',sans-serif;transition:all .2s;}
+.auth-tab.active{background:var(--bg2);color:var(--tx);box-shadow:0 2px 8px rgba(0,0,0,.08);}
+.auth-form{width:100%;display:flex;flex-direction:column;gap:14px;}
+.auth-input{width:100%;background:var(--bg3);border:2px solid transparent;border-radius:14px;padding:14px 16px;font-size:15px;color:var(--tx);outline:none;font-family:'Inter',sans-serif;transition:border .2s;}
+.auth-input:focus{border-color:var(--nav);}
+.auth-input::placeholder{color:var(--tx3);}
+.auth-btn{width:100%;padding:15px;background:var(--nav);border:none;border-radius:14px;font-size:15px;font-weight:700;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;transition:opacity .15s,transform .1s;margin-top:4px;}
+.auth-btn:active{opacity:.85;transform:scale(.98);}
+.auth-err{font-size:13px;color:var(--red);text-align:center;min-height:18px;}
+
+/* ── TOPBAR ── */
+.topbar{flex-shrink:0;padding:14px 18px 0;background:var(--bg);position:sticky;top:0;z-index:50;transition:box-shadow .25s,background .3s;}
+.topbar.shadowed{box-shadow:0 4px 18px rgba(15,23,42,.06);}
+[data-theme="dark"] .topbar.shadowed{box-shadow:0 4px 18px rgba(0,0,0,.35);}
+.tb-row{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+.ico-btn{width:44px;height:44px;border-radius:14px;background:var(--bg3);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx);transition:transform .15s,background .15s;flex-shrink:0;position:relative;}
+.ico-btn:active{transform:scale(.9);background:var(--bdim);color:var(--blue);}
+.ico-btn svg{width:19px;height:19px;}
+.dot-badge{position:absolute;top:8px;right:9px;width:7px;height:7px;border-radius:50%;background:var(--red);}
+.search-box{position:relative;flex:1;}
+.search-box input{width:100%;background:var(--bg3);border:none;border-radius:30px;padding:13px 16px 13px 42px;font-size:14.5px;color:var(--tx);outline:none;font-family:'Inter',sans-serif;}
+.search-box input::placeholder{color:var(--tx3);font-weight:500;}
+.search-box input:focus{box-shadow:0 0 0 3px var(--bdim);}
+.s-ico{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--tx3);pointer-events:none;display:flex;}
+.s-ico svg{width:17px;height:17px;}
+
+/* ── CONTENT ── */
+.content{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:calc(100px + env(safe-area-inset-bottom));}
+.content::-webkit-scrollbar{display:none;}
+
+/* ── HERO ── */
+.hero{padding:10px 18px 22px;text-align:center;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+.hero-balance{font-size:50px;font-weight:500;color:var(--tx);letter-spacing:-.03em;line-height:1;}
+.hero-coins{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-size:14px;font-weight:600;color:var(--gold);background:rgba(244,183,40,.12);padding:6px 14px;border-radius:30px;}
+.hero-coins svg{width:14px;height:14px;}
+.hero-change{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-size:16px;font-weight:700;color:var(--gtext);}
+.hero-change.dn{color:var(--rtext);}
+.hero-change svg{width:13px;height:13px;}
+
+/* ── ACTION ROW ── */
+.action-row{display:flex;justify-content:center;gap:14px;padding:6px 18px 26px;}
+.act-btn{display:flex;flex-direction:column;align-items:center;gap:9px;cursor:pointer;flex:1;max-width:72px;background:none;border:none;font-family:inherit;}
+.act-ico{width:54px;height:54px;border-radius:18px;background:var(--bg3);display:flex;align-items:center;justify-content:center;transition:transform .15s,background .15s;color:var(--tx);}
+.act-ico svg{width:20px;height:20px;}
+.act-btn:active .act-ico{transform:scale(.9);background:var(--bdim);color:var(--blue);}
+.act-lbl{font-size:12px;font-weight:700;color:var(--tx);}
+
+/* ── SECTION ── */
+.sec-hdr{padding:6px 18px 10px;}
+.sec-label{font-size:18px;font-weight:800;color:var(--tx);}
+
+/* ── ASSET ROW ── */
+.a-list{padding:4px 18px 0;}
+.a-row{display:flex;align-items:center;gap:13px;padding:16px 0;cursor:pointer;position:relative;}
+.a-ico{width:46px;height:46px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;}
+.a-ico svg{width:46px;height:46px;display:block;}
+.a-left{flex:1;min-width:0;}
+.a-sym-row{display:flex;align-items:center;gap:7px;}
+.a-sym{font-size:16px;font-weight:800;color:var(--tx);}
+.a-badge{font-size:11.5px;font-weight:600;color:var(--tx2);background:var(--bg3);padding:3px 9px;border-radius:30px;white-space:nowrap;}
+.a-sub-row{display:flex;align-items:center;gap:7px;margin-top:4px;}
+.a-price{font-size:14px;color:var(--tx2);font-weight:500;}
+.a-chg{font-size:14px;font-weight:700;}
+.a-chg.up{color:var(--gtext);}
+.a-chg.dn{color:var(--rtext);}
+.a-right{text-align:right;flex-shrink:0;min-width:80px;}
+.a-hold{font-size:15.5px;font-weight:800;color:var(--tx);}
+.a-val{font-size:14px;color:var(--tx2);font-weight:500;margin-top:4px;}
+
+/* ── BOTTOM NAV ── */
+.botnav-wrap{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:560px;z-index:100;padding:0 16px calc(18px + env(safe-area-inset-bottom));pointer-events:none;}
+.botnav{pointer-events:auto;width:100%;background:var(--bg2);border-radius:28px;display:flex;align-items:center;padding:8px 6px 10px;box-shadow:0 8px 32px rgba(15,23,42,.12),0 2px 8px rgba(15,23,42,.06);}
+[data-theme="dark"] .botnav{box-shadow:0 8px 32px rgba(0,0,0,.5);}
+.bn-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 4px 7px;border:none;background:none;cursor:pointer;font-size:10.5px;color:var(--tx3);font-family:'Inter',sans-serif;font-weight:600;border-radius:16px;}
+.bn-btn svg{width:20px;height:20px;stroke:var(--tx3);transition:stroke .18s,transform .15s;}
+.bn-btn.active{color:var(--nav);}
+.bn-btn.active svg{stroke:var(--nav);transform:scale(1.08);}
+.bn-btn:active svg{transform:scale(.88);}
+
+/* ── MODAL / OVERLAY ── */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;opacity:0;transition:opacity .25s;pointer-events:none;}
+.overlay.show{opacity:1;pointer-events:auto;}
+.sheet{position:fixed;bottom:0;left:50%;transform:translate(-50%,100%);width:100%;max-width:560px;background:var(--bg);border-radius:28px 28px 0 0;z-index:400;padding:0 0 calc(32px + env(safe-area-inset-bottom));transition:transform .32s cubic-bezier(.22,1,.36,1);}
+.sheet.open{transform:translate(-50%,0);}
+.sheet-handle{width:36px;height:4px;border-radius:4px;background:var(--bg4);margin:12px auto 20px;}
+.sheet-title{font-size:18px;font-weight:800;color:var(--tx);padding:0 20px 18px;}
+.sheet-body{padding:0 20px;}
+.form-lbl{font-size:13px;font-weight:600;color:var(--tx2);margin-bottom:6px;}
+.form-input{width:100%;background:var(--bg3);border:2px solid transparent;border-radius:14px;padding:13px 16px;font-size:15px;color:var(--tx);outline:none;font-family:'Inter',sans-serif;transition:border .2s;margin-bottom:14px;}
+.form-input:focus{border-color:var(--nav);}
+.form-hint{font-size:12px;color:var(--tx3);margin-top:-10px;margin-bottom:14px;}
+.form-max{font-size:12px;color:var(--nav);font-weight:600;cursor:pointer;}
+.primary-btn{width:100%;padding:15px;background:var(--nav);border:none;border-radius:16px;font-size:15px;font-weight:700;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;transition:opacity .15s,transform .1s;margin-top:6px;}
+.primary-btn:active{opacity:.85;transform:scale(.98);}
+.primary-btn:disabled{opacity:.4;cursor:not-allowed;}
+.danger-btn{background:var(--red);}
+
+/* ── COIN BADGE ── */
+.coin-avail{display:flex;align-items:center;justify-content:space-between;background:var(--bg3);border-radius:14px;padding:12px 16px;margin-bottom:16px;}
+.coin-avail-lbl{font-size:13px;color:var(--tx2);font-weight:500;}
+.coin-avail-val{font-size:15px;font-weight:800;color:var(--gold);}
+
+/* ── DETAIL PAGE ── */
+.det-page{position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;flex-direction:column;max-width:560px;margin:0 auto;transform:translateX(100%);transition:transform .32s cubic-bezier(.22,1,.36,1);}
+.det-page.open{transform:translateX(0);}
+.det-topbar{flex-shrink:0;padding:14px 18px 14px;display:flex;align-items:center;justify-content:space-between;}
+.det-back{width:44px;height:44px;border-radius:14px;background:var(--bg3);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx);}
+.det-back svg{width:20px;height:20px;}
+.det-star{width:44px;height:44px;border-radius:14px;background:none;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx3);}
+.det-star.on{color:var(--gold);}
+.det-star svg{width:22px;height:22px;}
+.det-hdr{padding:6px 18px 18px;display:flex;align-items:center;justify-content:space-between;}
+.det-coin{display:flex;align-items:center;gap:13px;}
+.det-ico{width:52px;height:52px;flex-shrink:0;}
+.det-ico svg{width:52px;height:52px;display:block;}
+.det-name{font-size:22px;font-weight:800;color:var(--tx);}
+.det-sub{font-size:14px;color:var(--tx2);font-weight:500;margin-top:2px;}
+.det-price-wrap{text-align:right;}
+.det-price{font-size:26px;font-weight:800;color:var(--tx);letter-spacing:-.02em;}
+.det-chg{font-size:15px;font-weight:700;margin-top:3px;}
+.det-chg.up{color:var(--gtext);}
+.det-chg.dn{color:var(--rtext);}
+.det-chart-wrap{padding:0 8px;position:relative;}
+.det-canvas{width:100%;height:200px;display:block;}
+.chart-loading{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;}
+.spinner{width:28px;height:28px;border:3px solid var(--bg3);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.time-sel{display:flex;align-items:center;padding:12px 12px 8px;gap:2px;}
+.time-btn{flex:1;height:34px;border:none;background:none;font-size:12px;font-weight:600;color:var(--tx3);cursor:pointer;border-radius:20px;font-family:'Inter',sans-serif;transition:background .15s,color .15s;}
+.time-btn.active{background:var(--bg3);color:var(--tx);}
+.chart-type-btn{flex:0 0 36px !important;display:flex;align-items:center;justify-content:center;padding:0 !important;}
+.det-bal{margin:12px 18px 0;padding:16px;background:var(--bg3);border-radius:20px;}
+.det-bal-lbl{font-size:13px;font-weight:600;color:var(--tx2);}
+.det-bal-row{display:flex;align-items:baseline;justify-content:space-between;margin-top:6px;}
+.det-bal-usd{font-size:20px;font-weight:800;color:var(--tx);}
+.det-bal-coin{font-size:13px;font-weight:500;color:var(--tx2);}
+.det-actions{display:flex;gap:10px;padding:14px 18px;}
+.det-act-btn{flex:1;padding:13px;border:none;border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;transition:opacity .15s;}
+.det-act-buy{background:var(--gtext);color:#fff;}
+.det-act-sell{background:var(--bg3);color:var(--tx);}
+.det-scroll{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:40px;}
+.det-scroll::-webkit-scrollbar{display:none;}
+
+/* ── PROFILE PAGE ── */
+.profile-page{position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;flex-direction:column;max-width:560px;margin:0 auto;transform:translateX(100%);transition:transform .32s cubic-bezier(.22,1,.36,1);}
+.profile-page.open{transform:translateX(0);}
+.prof-scroll{flex:1;overflow-y:auto;padding-bottom:40px;}
+.prof-scroll::-webkit-scrollbar{display:none;}
+.prof-hero{padding:24px 20px 20px;text-align:center;}
+.prof-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--nav),#8B5CF6);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:28px;font-weight:800;color:#fff;}
+.prof-name{font-size:20px;font-weight:800;color:var(--tx);}
+.prof-email{font-size:13px;color:var(--tx2);margin-top:3px;}
+.prof-coins-card{margin:0 18px 18px;padding:18px;background:linear-gradient(135deg,#F59E0B,#F4B728);border-radius:20px;}
+.prof-coins-lbl{font-size:13px;font-weight:600;color:rgba(0,0,0,.5);}
+.prof-coins-val{font-size:32px;font-weight:900;color:#000;margin-top:4px;}
+.prof-coins-sub{font-size:12px;color:rgba(0,0,0,.5);margin-top:2px;}
+.quest-card{margin:0 18px 18px;padding:18px;background:var(--bg3);border-radius:20px;}
+.quest-title{font-size:15px;font-weight:800;color:var(--tx);margin-bottom:4px;}
+.quest-desc{font-size:13px;color:var(--tx2);margin-bottom:14px;}
+.quest-btn{width:100%;padding:13px;background:var(--gold);border:none;border-radius:14px;font-size:14px;font-weight:700;color:#000;cursor:pointer;font-family:'Inter',sans-serif;}
+.quest-btn:disabled{opacity:.4;cursor:not-allowed;}
+.quest-streak{font-size:12px;color:var(--tx3);margin-top:10px;text-align:center;}
+
+/* ── LEADERBOARD ── */
+.lb-row{display:flex;align-items:center;gap:12px;padding:13px 18px;}
+.lb-rank{width:28px;font-size:14px;font-weight:800;color:var(--tx3);text-align:center;flex-shrink:0;}
+.lb-rank.top{color:var(--gold);}
+.lb-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--nav),#8B5CF6);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0;}
+.lb-info{flex:1;}
+.lb-name{font-size:14px;font-weight:700;color:var(--tx);}
+.lb-val{font-size:12px;color:var(--tx2);margin-top:2px;}
+.lb-badge{font-size:13px;font-weight:800;color:var(--gtext);}
+
+/* ── TX HISTORY ── */
+.tx-row{display:flex;align-items:center;gap:12px;padding:13px 18px;}
+.tx-ico{width:40px;height:40px;border-radius:14px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.tx-ico svg{width:18px;height:18px;}
+.tx-buy{background:rgba(16,169,104,.12);color:var(--gtext);}
+.tx-sell{background:rgba(225,29,72,.12);color:var(--rtext);}
+.tx-send{background:rgba(37,99,235,.12);color:var(--blue);}
+.tx-receive{background:rgba(139,92,246,.12);color:#8B5CF6;}
+.tx-swap{background:rgba(244,183,40,.12);color:var(--gold);}
+.tx-info{flex:1;}
+.tx-type{font-size:14px;font-weight:700;color:var(--tx);text-transform:capitalize;}
+.tx-sub{font-size:12px;color:var(--tx2);margin-top:2px;}
+.tx-val{text-align:right;}
+.tx-amount{font-size:14px;font-weight:700;}
+.tx-amount.pos{color:var(--gtext);}
+.tx-amount.neg{color:var(--rtext);}
+.tx-time{font-size:11px;color:var(--tx3);margin-top:2px;}
+
+/* ── SORT ── */
+.sort-row{display:flex;gap:6px;}
+.sort-btn{font-size:12px;font-weight:700;padding:5px 12px;border-radius:20px;border:none;background:var(--bg3);color:var(--tx3);cursor:pointer;font-family:'Inter',sans-serif;transition:background .15s,color .15s;}
+.sort-btn.active{background:var(--bg4);color:var(--tx);}
+
+/* ── EMPTY STATE ── */
+.empty-state{text-align:center;padding:48px 0;color:var(--tx3);}
+.empty-state svg{opacity:.4;margin-bottom:12px;}
+.empty-state .e-title{font-size:15px;font-weight:600;margin-top:4px;}
+.empty-state .e-sub{font-size:13px;margin-top:6px;}
+
+/* ── QR ── */
+.qr-wrap{display:flex;flex-direction:column;align-items:center;padding:0 20px 20px;}
+.qr-canvas-wrap{background:#fff;padding:16px;border-radius:20px;margin-bottom:16px;}
+.qr-addr{font-size:13px;color:var(--tx2);text-align:center;word-break:break-all;line-height:1.6;}
+.scan-wrap{position:relative;width:100%;border-radius:20px;overflow:hidden;background:#000;}
+.scan-wrap video{width:100%;display:block;border-radius:20px;}
+.scan-guide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;}
+.scan-box{width:200px;height:200px;border:3px solid #fff;border-radius:16px;box-shadow:0 0 0 2000px rgba(0,0,0,.5);}
+
+/* ── SWAP ── */
+.swap-page{padding:20px;}
+.swap-box{background:var(--bg3);border-radius:20px;padding:16px;margin-bottom:10px;}
+.swap-lbl{font-size:12px;color:var(--tx3);font-weight:600;margin-bottom:8px;}
+.swap-row{display:flex;align-items:center;gap:12px;}
+.swap-coin-btn{display:flex;align-items:center;gap:8px;background:var(--bg2);border:none;border-radius:12px;padding:8px 12px;cursor:pointer;font-family:'Inter',sans-serif;flex-shrink:0;}
+.swap-coin-btn svg{width:28px;height:28px;}
+.swap-coin-sym{font-size:15px;font-weight:800;color:var(--tx);}
+.swap-input{flex:1;background:none;border:none;font-size:22px;font-weight:700;color:var(--tx);outline:none;font-family:'Inter',sans-serif;text-align:right;width:0;}
+.swap-mid{display:flex;justify-content:center;margin:4px 0;}
+.swap-mid-btn{width:40px;height:40px;border-radius:50%;background:var(--bg3);border:2px solid var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);}
+.swap-mid-btn svg{width:18px;height:18px;}
+.swap-rate{text-align:center;font-size:13px;color:var(--tx3);margin:8px 0 16px;}
+
+/* ── TOAST ── */
+.toast-wrap{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:999;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;width:100%;max-width:520px;padding:0 18px;}
+.toast{background:var(--tx);color:var(--bg);font-size:13px;font-weight:600;padding:11px 18px;border-radius:30px;box-shadow:var(--shadow-lg);opacity:0;animation:toastIn .35s cubic-bezier(.22,1,.36,1) forwards;}
+.toast.err{background:var(--red);color:#fff;}
+.toast.ok{background:var(--gtext);color:#fff;}
+@keyframes toastIn{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:translateY(0);}}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:var(--bg3);margin:4px 18px;}
+.section-title{font-size:13px;font-weight:700;color:var(--tx3);padding:16px 18px 8px;text-transform:uppercase;letter-spacing:.05em;}
+</style>
+</head>
+<body>
+<div class="app" id="app" style="display:none">
+
+  <!-- TOPBAR -->
+  <div class="topbar" id="topbar">
+    <div class="tb-row">
+      <button class="ico-btn" onclick="showSettings()">
+        <span class="dot-badge" id="questDot" style="display:none"></span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1.08-1.52 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+      <div class="search-box">
+        <span class="s-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></span>
+        <input type="text" placeholder="Cari aset..." id="searchInput" oninput="onSearch(this.value)">
+      </div>
+      <button class="ico-btn" onclick="toggleDark()">
+        <svg id="darkIco" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+      </button>
+      <button class="ico-btn" onclick="openReceive()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="7" y1="12" x2="17" y2="12"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- CONTENT -->
+  <div class="content" id="mainContent">
+    <!-- HOME -->
+    <div id="homeTab">
+      <div class="hero">
+        <div class="hero-balance" id="totalBalance">$0.00</div>
+        <div class="hero-coins" id="heroCoins">
+          <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/><text x="12" y="16" text-anchor="middle" font-size="10" fill="#000" font-weight="800" font-family="Arial">C</text></svg>
+          <span id="heroCoinsVal">0 koin</span>
+        </div>
+        <div class="hero-change up" id="heroChange">
+          <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 6 19 17 5 17"/></svg>
+          <span>+0.00% hari ini</span>
+        </div>
+      </div>
+      <div class="action-row">
+        <button class="act-btn" onclick="openSend()">
+          <span class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="8 7 17 7 17 16"/></svg></span>
+          <span class="act-lbl">Send</span>
+        </button>
+        <button class="act-btn" onclick="openReceive()">
+          <span class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="6 13 12 19 18 13"/></svg></span>
+          <span class="act-lbl">Receive</span>
+        </button>
+        <button class="act-btn" onclick="setTab('swap')">
+          <span class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg></span>
+          <span class="act-lbl">Swap</span>
+        </button>
+        <button class="act-btn" onclick="openBuySheet()">
+          <span class="act-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></span>
+          <span class="act-lbl">Buy</span>
+        </button>
+      </div>
+      <div class="sec-hdr"><span class="sec-label">Aset</span></div>
+      <div class="a-list" id="assetList"></div>
+    </div>
+
+    <!-- MARKETS -->
+    <div id="marketsTab" style="display:none">
+      <div class="sec-hdr">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span class="sec-label">Markets</span>
+          <div class="sort-row">
+            <button class="sort-btn active" id="sb_all" onclick="setMktSort('all')">All</button>
+            <button class="sort-btn" id="sb_gainers" onclick="setMktSort('gainers')">▲ Gainers</button>
+            <button class="sort-btn" id="sb_losers" onclick="setMktSort('losers')">▼ Losers</button>
+          </div>
+        </div>
+      </div>
+      <div class="a-list" id="marketList"></div>
+    </div>
+
+    <!-- SWAP -->
+    <div id="swapTab" style="display:none">
+      <div class="sec-hdr"><span class="sec-label">Swap</span></div>
+      <div class="swap-page">
+        <div class="swap-box">
+          <div class="swap-lbl">Dari</div>
+          <div class="swap-row">
+            <button class="swap-coin-btn" id="swapFromBtn" onclick="openSwapPicker('from')">
+              <svg viewBox="0 0 44 44" id="swapFromIco" width="28" height="28"></svg>
+              <span class="swap-coin-sym" id="swapFromSym">BTC</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <input class="swap-input" id="swapFromAmt" type="number" placeholder="0" oninput="calcSwap()">
+          </div>
+          <div style="font-size:12px;color:var(--tx3);margin-top:8px">Tersedia: <span id="swapFromBal">0</span></div>
+        </div>
+        <div class="swap-mid">
+          <button class="swap-mid-btn" onclick="swapFlip()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+          </button>
+        </div>
+        <div class="swap-box">
+          <div class="swap-lbl">Ke</div>
+          <div class="swap-row">
+            <button class="swap-coin-btn" id="swapToBtn" onclick="openSwapPicker('to')">
+              <svg viewBox="0 0 44 44" id="swapToIco" width="28" height="28"></svg>
+              <span class="swap-coin-sym" id="swapToSym">ETH</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+            <input class="swap-input" id="swapToAmt" type="number" placeholder="0" readonly>
+          </div>
+          <div style="font-size:12px;color:var(--tx3);margin-top:8px">Tersedia: <span id="swapToBal">0</span></div>
+        </div>
+        <div class="swap-rate" id="swapRate">— pilih koin —</div>
+        <button class="primary-btn" onclick="doSwap()">Swap Sekarang</button>
+      </div>
+    </div>
+
+    <!-- FAVORITE -->
+    <div id="favoriteTab" style="display:none">
+      <div class="sec-hdr"><span class="sec-label">Favorite</span></div>
+      <div class="a-list" id="favoriteList"></div>
+    </div>
+
+    <!-- PROFILE -->
+    <div id="profileTab" style="display:none">
+      <div class="prof-hero">
+        <div class="prof-avatar" id="profAvatar">?</div>
+        <div class="prof-name" id="profName">—</div>
+        <div class="prof-email" id="profEmail">—</div>
+      </div>
+      <div class="prof-coins-card" style="margin:0 18px 18px;padding:18px;background:linear-gradient(135deg,#F59E0B,#F4B728);border-radius:20px;">
+        <div style="font-size:13px;font-weight:600;color:rgba(0,0,0,.5)">Koin Tersedia</div>
+        <div style="font-size:32px;font-weight:900;color:#000;margin-top:4px" id="profCoins">0</div>
+        <div style="font-size:12px;color:rgba(0,0,0,.5);margin-top:2px">1 koin = $1 · digunakan untuk beli crypto</div>
+      </div>
+      <!-- QUEST -->
+      <div style="margin:0 18px 18px;padding:18px;background:var(--bg3);border-radius:20px;">
+        <div style="font-size:15px;font-weight:800;color:var(--tx);margin-bottom:4px">🎯 Quest Harian</div>
+        <div style="font-size:13px;color:var(--tx2);margin-bottom:14px">Login setiap hari untuk dapat koin gratis!</div>
+        <button class="quest-btn" id="questBtn" onclick="claimQuest()">Klaim +1 Koin</button>
+        <div class="quest-streak" id="questStreak">Streak: 0 hari</div>
+      </div>
+      <!-- LEADERBOARD -->
+      <div class="section-title">🏆 Leaderboard</div>
+      <div id="leaderboard"></div>
+      <!-- TX HISTORY -->
+      <div class="section-title">📋 Riwayat Transaksi</div>
+      <div id="txHistory"></div>
+      <!-- LOGOUT -->
+      <div style="padding:18px">
+        <button class="primary-btn danger-btn" onclick="doLogout()">Keluar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="botnav-wrap">
+    <div class="botnav">
+      <button class="bn-btn active" id="tab_home" onclick="setTab('home')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span>Home</span>
+      </button>
+      <button class="bn-btn" id="tab_markets" onclick="setTab('markets')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        <span>Markets</span>
+      </button>
+      <button class="bn-btn" id="tab_swap" onclick="setTab('swap')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        <span>Swap</span>
+      </button>
+      <button class="bn-btn" id="tab_favorite" onclick="setTab('favorite')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span>Favorite</span>
+      </button>
+      <button class="bn-btn" id="tab_profile" onclick="setTab('profile')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Profile</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- DETAIL PAGE -->
+  <div class="det-page" id="detPage">
+    <div class="det-topbar">
+      <button class="det-back" onclick="closeDetail()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <button class="det-star" id="detStar" onclick="toggleStar()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </button>
+    </div>
+    <div class="det-scroll">
+      <div class="det-hdr">
+        <div class="det-coin">
+          <div class="det-ico" id="detIco"></div>
+          <div><div class="det-name" id="detName"></div><div class="det-sub" id="detSub"></div></div>
+        </div>
+        <div class="det-price-wrap">
+          <div class="det-price" id="detPrice"></div>
+          <div class="det-chg" id="detChg"></div>
+        </div>
+      </div>
+      <div class="det-chart-wrap">
+        <canvas class="det-canvas" id="detCanvas"></canvas>
+        <div class="chart-loading" id="chartLoading"><div class="spinner"></div></div>
+      </div>
+      <div class="time-sel">
+        <button class="time-btn" onclick="setRange(this,'live')">LIVE</button>
+        <button class="time-btn" onclick="setRange(this,'1m')">1M</button>
+        <button class="time-btn" onclick="setRange(this,'1H')">1H</button>
+        <button class="time-btn" onclick="setRange(this,'1D')">1D</button>
+        <button class="time-btn active" onclick="setRange(this,'1W')">1W</button>
+        <button class="time-btn" onclick="setRange(this,'1Mo')">1M</button>
+        <button class="time-btn chart-type-btn" id="chartTypeBtn" onclick="toggleChartType()">
+          <svg id="chartTypeIco" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="17" height="17"><line x1="4" y1="2" x2="4" y2="4"/><rect x="2" y="4" width="4" height="7" rx="0.5"/><line x1="4" y1="11" x2="4" y2="14"/><line x1="10" y1="5" x2="10" y2="7"/><rect x="8" y="7" width="4" height="6" rx="0.5"/><line x1="10" y1="13" x2="10" y2="16"/><line x1="16" y1="3" x2="16" y2="6"/><rect x="14" y="6" width="4" height="5" rx="0.5"/><line x1="16" y1="11" x2="16" y2="14"/></svg>
+        </button>
+      </div>
+      <div class="det-bal">
+        <div class="det-bal-lbl">Saldo kamu</div>
+        <div class="det-bal-row">
+          <div class="det-bal-usd" id="detBalUsd">$0.00</div>
+          <div class="det-bal-coin" id="detBalCoin"></div>
+        </div>
+      </div>
+      <div class="det-actions">
+        <button class="det-act-btn det-act-buy" onclick="openBuySheet(curAsset&&curAsset.id)">Beli</button>
+        <button class="det-act-btn det-act-sell" onclick="openSellSheet(curAsset&&curAsset.id)">Jual</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AUTH SCREEN -->
+<div class="auth-screen" id="authScreen">
+  <div class="auth-logo">Xentra<span>.</span></div>
+  <div class="auth-sub">Finance · Simulasi Crypto</div>
+  <div class="auth-tabs">
+    <button class="auth-tab active" onclick="switchAuth('login')">Masuk</button>
+    <button class="auth-tab" onclick="switchAuth('register')">Daftar</button>
+  </div>
+  <div class="auth-form">
+    <div id="usernameWrap" style="display:none">
+      <input class="auth-input" id="authUsername" placeholder="Username" autocomplete="off">
+    </div>
+    <input class="auth-input" id="authEmail" type="email" placeholder="Email" autocomplete="email">
+    <input class="auth-input" id="authPass" type="password" placeholder="Password" autocomplete="current-password">
+    <div class="auth-err" id="authErr"></div>
+    <button class="auth-btn" id="authBtn" onclick="doAuth()">Masuk</button>
+  </div>
+</div>
+
+<!-- OVERLAY -->
+<div class="overlay" id="overlay" onclick="closeSheet()"></div>
+
+<!-- SEND SHEET -->
+<div class="sheet" id="sendSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Kirim Crypto</div>
+  <div class="sheet-body">
+    <div class="form-lbl">Koin</div>
+    <select class="form-input" id="sendSymbol" onchange="updateSendBal()">
+      <option>BTC</option><option>ETH</option><option>BNB</option><option>SOL</option><option>XRP</option>
+    </select>
+    <div class="coin-avail">
+      <span class="coin-avail-lbl">Tersedia</span>
+      <span class="coin-avail-val" id="sendBalShow">0</span>
+    </div>
+    <div class="form-lbl">Username tujuan <button class="form-max" onclick="openScanner()">📷 Scan QR</button></div>
+    <input class="form-input" id="sendTo" placeholder="@username" autocomplete="off">
+    <div class="form-lbl">Jumlah <span class="form-max" onclick="setMaxSend()">MAX</span></div>
+    <input class="form-input" id="sendAmt" type="number" placeholder="0.00" oninput="updateSendUsd()">
+    <div class="form-hint" id="sendUsdHint">≈ $0.00</div>
+    <button class="primary-btn" onclick="doSend()">Kirim</button>
+  </div>
+</div>
+
+<!-- RECEIVE SHEET -->
+<div class="sheet" id="receiveSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Receive / QR Kamu</div>
+  <div class="qr-wrap">
+    <div class="qr-canvas-wrap"><canvas id="qrCanvas" width="200" height="200"></canvas></div>
+    <div class="qr-addr" id="qrAddr">—</div>
+    <button class="primary-btn" style="margin-top:14px" onclick="copyAddr()">Salin Username</button>
+  </div>
+</div>
+
+<!-- BUY SHEET -->
+<div class="sheet" id="buySheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Beli Crypto</div>
+  <div class="sheet-body">
+    <div class="form-lbl">Koin</div>
+    <select class="form-input" id="buySymbol" onchange="updateBuyCalc()">
+      <option>BTC</option><option>ETH</option><option>BNB</option><option>SOL</option><option>XRP</option>
+    </select>
+    <div class="coin-avail">
+      <span class="coin-avail-lbl">🪙 Koin tersedia</span>
+      <span class="coin-avail-val" id="buyCoinsShow">0 koin</span>
+    </div>
+    <div class="form-lbl">Jumlah koin <span class="form-max" onclick="setMaxBuy()">MAX</span></div>
+    <input class="form-input" id="buyCoins" type="number" placeholder="0" oninput="updateBuyCalc()">
+    <div class="form-hint" id="buyHint">= 0 BTC</div>
+    <button class="primary-btn" onclick="doBuy()">Beli</button>
+  </div>
+</div>
+
+<!-- SELL SHEET -->
+<div class="sheet" id="sellSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Jual Crypto</div>
+  <div class="sheet-body">
+    <div class="form-lbl">Koin</div>
+    <select class="form-input" id="sellSymbol" onchange="updateSellCalc()">
+      <option>BTC</option><option>ETH</option><option>BNB</option><option>SOL</option><option>XRP</option>
+    </select>
+    <div class="coin-avail">
+      <span class="coin-avail-lbl">Tersedia</span>
+      <span class="coin-avail-val" id="sellBalShow">0</span>
+    </div>
+    <div class="form-lbl">Jumlah <span class="form-max" onclick="setMaxSell()">MAX</span></div>
+    <input class="form-input" id="sellAmt" type="number" placeholder="0" oninput="updateSellCalc()">
+    <div class="form-hint" id="sellHint">= $0.00 → 0 koin</div>
+    <button class="primary-btn" onclick="doSell()">Jual</button>
+  </div>
+</div>
+
+<!-- SWAP PICKER SHEET -->
+<div class="sheet" id="swapPickerSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title" id="swapPickerTitle">Pilih Koin</div>
+  <div class="sheet-body" id="swapPickerList"></div>
+</div>
+
+<!-- SCANNER SHEET -->
+<div class="sheet" id="scannerSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Scan QR</div>
+  <div class="sheet-body">
+    <div class="scan-wrap"><video id="scanVideo" autoplay playsinline muted></video><div class="scan-guide"><div class="scan-box"></div></div></div>
+    <button class="primary-btn" style="margin-top:14px" onclick="stopScanner()">Batal</button>
+  </div>
+</div>
+
+<!-- SETTINGS SHEET -->
+<div class="sheet" id="settingsSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title">Pengaturan</div>
+  <div class="sheet-body">
+    <button class="primary-btn" style="background:var(--bg3);color:var(--tx);margin-bottom:10px" onclick="toggleDark();closeSheet()">🌙 Toggle Dark Mode</button>
+    <button class="primary-btn danger-btn" onclick="doLogout()">Keluar</button>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+// ── SUPABASE ──
+const SB_URL='https://puzufljyupovaefqzfrk.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InB1enVmbGp5dXBvdmFlZnF6ZnJrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODIxNjA0NTcsImV4cCI6MjA5NzczNjQ1N30.THcZiRjVol56N6DKm1Va84Sn8zPSbbKOEKCovZ1WC28';
+const sb=supabase.createClient(SB_URL,SB_KEY);
+
+// ── ICONS ──
+var ICO={
+  BNB:'<circle cx="22" cy="22" r="22" fill="#F3BA2F"/><path fill="#fff" d="M16.38 19.25L22 13.63l5.63 5.63 3.27-3.27L22 7.09 12.11 16.98l3.27 3.27zM7.09 22l3.27-3.27 3.27 3.27-3.27 3.27zm9.29 2.75L22 30.37l5.63-5.63 3.27 3.27-.01.01L22 36.91 12.11 27.02l-.01-.01 3.28-3.26zM30.91 22l3.27-3.27 3.27 3.27-3.27 3.27zm-4.91 0l-4-3.99L22 18l-.01.01L18 22l4 3.99L22 26l.01-.01L26 22z"/>',
+  BTC:'<circle cx="22" cy="22" r="22" fill="#F7931A"/><path d="M29.6 19.3c.4-2.6-1.6-4-4.3-4.9l.9-3.5-2.1-.5-.9 3.4c-.6-.1-1.1-.3-1.7-.4l.9-3.4-2.1-.5-.9 3.5-1.4-.3-2.9-.7-.6 2.2s1.6.4 1.5.4c.8.2.9.7.9 1.2l-2.2 8.6c-.1.2-.3.6-.8.4l-1.5-.4-1 2.4 2.7.7 1.5.4-.9 3.6 2.1.5.9-3.5c.6.1 1.1.3 1.7.4l-.9 3.5 2.1.5.9-3.6c3.6.7 6.3.4 7.4-2.8.9-2.6 0-4.1-1.9-5.1 1.4-.3 2.4-1.2 2.6-3zm-4.8 6.7c-.6 2.6-5.1 1.2-6.5.8l1.1-4.6c1.4.4 6.1 1.1 5.4 3.8zm.6-6.8c-.6 2.3-4.3 1.2-5.5.9l1-4.2c1.2.3 5.1.9 4.5 3.3z" fill="#fff"/>',
+  ETH:'<circle cx="22" cy="22" r="22" fill="#627EEA"/><path d="M22 8v10.9l8.9 4-8.9-14.9z" fill="#fff" fill-opacity=".7"/><path d="M22 8l-8.9 14.9 8.9-4V8z" fill="#fff"/><path d="M22 27.7v6.3l8.9-12.3-8.9 6z" fill="#fff" fill-opacity=".7"/><path d="M22 34v-6.3l-8.9-6L22 34z" fill="#fff"/><path d="M22 26.1l8.9-5-8.9-4v9z" fill="#fff" fill-opacity=".45"/><path d="M13.1 21.1l8.9 5v-9l-8.9 4z" fill="#fff" fill-opacity=".7"/>',
+  SOL:'<circle cx="22" cy="22" r="22" fill="#000"/><linearGradient id="sg" x1="11" y1="29" x2="33" y2="15" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#00FFA3"/><stop offset="1" stop-color="#DC1FFF"/></linearGradient><path d="M14.5 26.6a1 1 0 01.7-.3h18.3a.5.5 0 01.35.85l-3.4 3.4a1 1 0 01-.7.3H11.45a.5.5 0 01-.35-.85zm0-13.1a1 1 0 01.7-.3h18.3a.5.5 0 01.35.85l-3.4 3.4a1 1 0 01-.7.3H11.45a.5.5 0 01-.35-.85zM29.8 20a1 1 0 00-.7-.3H10.8a.5.5 0 00-.35.85l3.4 3.4a1 1 0 00.7.3h18.3a.5.5 0 00.35-.85z" fill="url(#sg)"/>',
+  XRP:'<circle cx="22" cy="22" r="22" fill="#23292F"/><path d="M29.8 13h3.4l-6.9 6.8c-2.4 2.4-6.2 2.4-8.6 0L10.8 13h3.4l5.2 5.1c1.4 1.4 3.7 1.4 5.1 0L29.8 13zm-15.7 18h-3.4l7-6.9c2.4-2.4 6.2-2.4 8.6 0l6.9 6.9h-3.4l-5.2-5.2c-1.4-1.4-3.7-1.4-5.1 0L14.1 31z" fill="#fff"/>'
+};
+
+var COINS=['BTC','ETH','BNB','SOL','XRP'];
+var PRICES={BTC:64000,ETH:1730,BNB:589,SOL:74,XRP:0.52};
+var CHANGES={BTC:0.76,ETH:0.22,BNB:0.39,SOL:3.28,XRP:1.45};
+var IDS={BTC:'BTCUSDT',ETH:'ETHUSDT',BNB:'BNBUSDT',SOL:'SOLUSDT',XRP:'XRPUSDT'};
+
+// ── STATE ──
+var dark=localStorage.getItem('xf_dark')==='1';
+var stars=JSON.parse(localStorage.getItem('xf_stars')||'[]');
+var curTab='home';
+var curAsset=null;
+var curRange='1W';
+var chartType='line';
+var chartCache={};
+var mktSort='all';
+var liveTimer=null;
+var curUser=null;
+var curProfile=null;
+var holdings={};
+var swapPickerTarget='from';
+var swapFrom='BTC',swapTo='ETH';
+var scanStream=null;
+var scanTimer=null;
+
+// ── HELPERS ──
+function fmtP(p){if(p>=1000)return'$'+p.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});if(p>=1)return'$'+p.toFixed(2);return'$'+p.toFixed(4);}
+function fmtV(v){return'$'+v.toFixed(2);}
+function ico(sym,size){return'<svg viewBox="0 0 44 44" width="'+size+'" height="'+size+'">'+(ICO[sym]||'')+'</svg>';}
+function vib(ms){if(navigator.vibrate)navigator.vibrate(ms);}
+function fmtAmt(n){if(n===0)return'0';if(n<0.0001)return n.toFixed(8);if(n<0.01)return n.toFixed(6);if(n<1)return n.toFixed(4);return n.toFixed(4);}
+function fmtTime(ts){var d=new Date(ts);return d.toLocaleDateString('id-ID',{day:'numeric',month:'short'})+' '+d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});}
+
+function showToast(msg,type){
+  var w=document.getElementById('toastWrap');
+  var d=document.createElement('div');
+  d.className='toast'+(type?' '+type:'');
+  d.textContent=msg;w.appendChild(d);
+  setTimeout(function(){d.style.transition='opacity .3s,transform .3s';d.style.opacity='0';d.style.transform='translateY(-8px)';setTimeout(function(){d.remove();},320);},2200);
+}
+
+// ── DARK MODE ──
+function applyDark(){
+  document.documentElement.setAttribute('data-theme',dark?'dark':'');
+  document.getElementById('themeMeta').content=dark?'#0A0C12':'#ffffff';
+  localStorage.setItem('xf_dark',dark?'1':'0');
+  var el=document.getElementById('darkIco');
+  el.innerHTML=dark?'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>':'<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+}
+function toggleDark(){dark=!dark;applyDark();vib(10);}
+
+// ── AUTH ──
+var authMode='login';
+function switchAuth(mode){
+  authMode=mode;
+  document.querySelectorAll('.auth-tab').forEach(function(t,i){t.classList.toggle('active',(i===0&&mode==='login')||(i===1&&mode==='register'));});
+  document.getElementById('usernameWrap').style.display=mode==='register'?'':'none';
+  document.getElementById('authBtn').textContent=mode==='login'?'Masuk':'Daftar';
+  document.getElementById('authErr').textContent='';
+}
+
+async function doAuth(){
+  var email=document.getElementById('authEmail').value.trim();
+  var pass=document.getElementById('authPass').value;
+  var btn=document.getElementById('authBtn');
+  btn.disabled=true;btn.textContent='Loading...';
+  document.getElementById('authErr').textContent='';
+  try{
+    if(authMode==='login'){
+      var {data,error}=await sb.auth.signInWithPassword({email,password:pass});
+      if(error)throw error;
+    }else{
+      var uname=document.getElementById('authUsername').value.trim().toLowerCase().replace(/[^a-z0-9_]/g,'');
+      if(!uname||uname.length<3){throw{message:'Username min 3 karakter (huruf/angka/_)'};}
+      var {data:existing}=await sb.from('profiles').select('id').eq('username',uname).single();
+      if(existing){throw{message:'Username sudah dipakai'};}
+      var {data,error}=await sb.auth.signUp({email,password:pass});
+      if(error)throw error;
+      await sb.from('profiles').insert({id:data.user.id,username:uname,coins:10});
+    }
+  }catch(e){
+    document.getElementById('authErr').textContent=e.message||'Terjadi kesalahan';
+    btn.disabled=false;btn.textContent=authMode==='login'?'Masuk':'Daftar';
+  }
+}
+
+async function doLogout(){
+  await sb.auth.signOut();
+  curUser=null;curProfile=null;holdings={};
+  document.getElementById('app').style.display='none';
+  document.getElementById('authScreen').style.display='flex';
+  closeSheet();
+}
+
+// ── TABS ──
+var TABS=['home','markets','swap','favorite','profile'];
+function setTab(tab){
+  curTab=tab;
+  TABS.forEach(function(t){
+    document.getElementById(t+'Tab').style.display=t===tab?'':'none';
+    var btn=document.getElementById('tab_'+t);
+    if(btn)btn.classList.toggle('active',t===tab);
+  });
+  document.getElementById('searchInput').value='';
+  vib(6);
+  if(tab==='markets'){renderMarket();fetchMarketPrices();}
+  else if(tab==='favorite'){renderFavorite();}
+  else if(tab==='profile'){loadProfile();}
+  else if(tab==='swap'){initSwap();}
+}
+
+// ── HOME ──
+function renderWallet(list){
+  var wrap=document.getElementById('assetList');
+  if(!list||!list.length){wrap.innerHTML='<div class="empty-state"><div class="e-title">Belum ada aset</div><div class="e-sub">Beli crypto dengan koin quest kamu</div></div>';return;}
+  wrap.innerHTML=list.map(function(a,i){
+    var up=a.change>=0;
+    var hold=holdings[a.sym]||0;
+    var val=hold*PRICES[a.sym];
+    return'<div class="a-row" style="animation:fadeUp .45s '+(0.05*i)+'s cubic-bezier(.22,1,.36,1) both" onclick="openDetail(\''+a.sym+'\')">'
+      +'<div class="a-ico">'+ico(a.sym,46)+'</div>'
+      +'<div class="a-left"><div class="a-sym-row"><span class="a-sym">'+a.sym+'</span><span class="a-badge">'+a.name+'</span></div>'
+      +'<div class="a-sub-row"><span class="a-price" id="wp_'+a.sym+'">'+fmtP(a.price)+'</span><span class="a-chg '+(up?'up':'dn')+'" id="wc_'+a.sym+'">'+(up?'+':'')+a.change.toFixed(2)+'%</span></div></div>'
+      +'<div class="a-right"><div class="a-hold">'+fmtAmt(hold)+'</div><div class="a-val">'+fmtV(val)+'</div></div>'
+      +'</div>';
+  }).join('');
+}
+
+var WALLET=[
+  {id:'BNBUSDT',sym:'BNB',name:'BNB Smart Chain',price:589,change:0.39},
+  {id:'BTCUSDT',sym:'BTC',name:'Bitcoin',price:64000,change:0.76},
+  {id:'ETHUSDT',sym:'ETH',name:'Ethereum',price:1730,change:0.22},
+  {id:'SOLUSDT',sym:'SOL',name:'Solana',price:74,change:3.28},
+  {id:'XRPUSDT',sym:'XRP',name:'XRP',price:0.52,change:1.45}
+];
+
+function updateHeroBalance(){
+  var total=WALLET.reduce(function(s,a){return s+(holdings[a.sym]||0)*PRICES[a.sym];},0);
+  document.getElementById('totalBalance').textContent=fmtV(total);
+  document.getElementById('heroCoinsVal').textContent=(curProfile?curProfile.coins.toFixed(0):0)+' koin';
+  document.getElementById('profCoins').textContent=curProfile?curProfile.coins.toFixed(0):'0';
+}
+
+function onSearch(q){
+  if(curTab!=='home')return;
+  q=q.trim().toLowerCase();
+  renderWallet(!q?WALLET:WALLET.filter(function(a){return a.sym.toLowerCase().includes(q)||a.name.toLowerCase().includes(q);}));
+}
+
+// ── MARKETS ──
+var mktSort='all';
+function setMktSort(s){
+  mktSort=s;
+  ['all','gainers','losers'].forEach(function(k){var b=document.getElementById('sb_'+k);if(b)b.className='sort-btn'+(k===s?' active':'');});
+  renderMarket();
+}
+function renderMarket(){
+  var list=WALLET.slice();
+  if(mktSort==='gainers')list=list.slice().sort(function(a,b){return b.change-a.change;});
+  else if(mktSort==='losers')list=list.slice().sort(function(a,b){return a.change-b.change;});
+  var wrap=document.getElementById('marketList');
+  wrap.innerHTML=list.map(function(a,i){
+    var up=a.change>=0,sign=up?'+':'';
+    return'<div class="a-row" style="animation:fadeUp .35s '+(0.04*i)+'s cubic-bezier(.22,1,.36,1) both" onclick="openDetail(\''+a.sym+'\')">'
+      +'<div class="a-ico">'+ico(a.sym,46)+'</div>'
+      +'<div class="a-left"><div class="a-sym-row"><span class="a-sym">'+a.sym+'</span><span class="a-badge">'+a.name+'</span></div>'
+      +'<div class="a-sub-row"><span class="a-price" id="mp_'+a.sym+'">'+fmtP(a.price)+'</span><span class="a-chg '+(up?'up':'dn')+'" id="mc_'+a.sym+'">'+sign+a.change.toFixed(2)+'%</span></div></div>'
+      +'<div class="a-right"><div class="a-hold" style="font-size:13px;color:var(--tx3);font-weight:600">24h</div>'
+      +'<div class="a-val" style="color:'+(up?'var(--gtext)':'var(--rtext)')+';font-weight:700">'+sign+a.change.toFixed(2)+'%</div></div>'
+      +'</div>';
+  }).join('');
+}
+async function fetchMarketPrices(){
+  await Promise.allSettled(WALLET.map(async function(a){
+    try{var r=await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol='+a.id);var d=await r.json();
+      if(d.lastPrice){a.price=parseFloat(d.lastPrice);PRICES[a.sym]=a.price;a.change=parseFloat(d.priceChangePercent)||0;CHANGES[a.sym]=a.change;
+        ['mp_','wp_'].forEach(function(p){var e=document.getElementById(p+a.sym);if(e)e.textContent=fmtP(a.price);});
+        ['mc_','wc_'].forEach(function(p){var e=document.getElementById(p+a.sym);if(e){e.textContent=(a.change>=0?'+':'')+a.change.toFixed(2)+'%';e.className='a-chg '+(a.change>=0?'up':'dn');}});
+      }
+    }catch(e){}
+  }));
+  updateHeroBalance();
+}
+
+// ── FAVORITE ──
+function renderFavorite(){
+  var favs=WALLET.filter(function(a){return stars.indexOf(a.sym)>=0;});
+  var wrap=document.getElementById('favoriteList');
+  if(!favs.length){wrap.innerHTML='<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><div class="e-title">Belum ada favorit</div><div class="e-sub">Tap bintang di detail aset</div></div>';return;}
+  wrap.innerHTML=favs.map(function(a,i){var up=a.change>=0;
+    return'<div class="a-row" onclick="openDetail(\''+a.sym+'\')">'+'<div class="a-ico">'+ico(a.sym,46)+'</div>'+'<div class="a-left"><div class="a-sym-row"><span class="a-sym">'+a.sym+'</span><span class="a-badge">'+a.name+'</span></div><div class="a-sub-row"><span class="a-price">'+fmtP(a.price)+'</span><span class="a-chg '+(up?'up':'dn')+'">'+(up?'+':'')+a.change.toFixed(2)+'%</span></div></div>'+'<div class="a-right"><div class="a-hold" style="font-size:13px;color:var(--tx3)">24h</div><div class="a-val" style="color:'+(up?'var(--gtext)':'var(--rtext)')+';font-weight:700">'+(up?'+':'')+a.change.toFixed(2)+'%</div></div></div>';
+  }).join('');
+}
+
+// ── DETAIL ──
+function openDetail(sym){
+  var a=WALLET.find(function(x){return x.sym===sym;});
+  if(!a)return;
+  curAsset=a;vib(8);
+  document.getElementById('detIco').innerHTML=ico(a.sym,52);
+  document.getElementById('detName').textContent=a.sym;
+  document.getElementById('detSub').textContent=a.name;
+  document.getElementById('detPrice').textContent=fmtP(a.price);
+  var chgEl=document.getElementById('detChg');
+  chgEl.textContent=(a.change>=0?'+':'')+a.change.toFixed(2)+'%';
+  chgEl.className='det-chg '+(a.change>=0?'up':'dn');
+  var hold=holdings[a.sym]||0;
+  document.getElementById('detBalUsd').textContent=fmtV(hold*a.price);
+  document.getElementById('detBalCoin').textContent=fmtAmt(hold)+' '+a.sym;
+  var starred=stars.indexOf(a.sym)>=0;
+  var starEl=document.getElementById('detStar');
+  starEl.className='det-star'+(starred?' on':'');
+  starEl.querySelector('svg').setAttribute('fill',starred?'#F4B728':'none');
+  starEl.querySelector('svg').setAttribute('stroke',starred?'#F4B728':'currentColor');
+  curRange='1W';
+  document.querySelectorAll('.time-btn').forEach(function(b){b.classList.toggle('active',b.textContent==='1W'&&!b.id);});
+  document.querySelector('.det-scroll').scrollTop=0;
+  document.getElementById('detPage').classList.add('open');
+  document.body.style.overflow='hidden';
+  loadChart(a,'1W');
+  clearInterval(liveTimer);
+  liveTimer=setInterval(function(){fetchOnePrice(a);},10000);
+}
+function closeDetail(){document.getElementById('detPage').classList.remove('open');document.body.style.overflow='';clearInterval(liveTimer);vib(6);}
+function toggleStar(){
+  if(!curAsset)return;
+  var sym=curAsset.sym,idx=stars.indexOf(sym);
+  if(idx>=0)stars.splice(idx,1);else stars.push(sym);
+  localStorage.setItem('xf_stars',JSON.stringify(stars));
+  var on=stars.indexOf(sym)>=0;
+  var starEl=document.getElementById('detStar');
+  starEl.className='det-star'+(on?' on':'');
+  starEl.querySelector('svg').setAttribute('fill',on?'#F4B728':'none');
+  starEl.querySelector('svg').setAttribute('stroke',on?'#F4B728':'currentColor');
+  showToast(on?sym+' ditambahkan ke Favorite':sym+' dihapus dari Favorite');vib(10);
+}
+async function fetchOnePrice(a){
+  try{var r=await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol='+a.id);var d=await r.json();
+    if(d.lastPrice){a.price=parseFloat(d.lastPrice);PRICES[a.sym]=a.price;a.change=parseFloat(d.priceChangePercent)||0;
+      document.getElementById('detPrice').textContent=fmtP(a.price);
+      var e=document.getElementById('detChg');e.textContent=(a.change>=0?'+':'')+a.change.toFixed(2)+'%';e.className='det-chg '+(a.change>=0?'up':'dn');
+    }
+  }catch(e){}
+}
+
+// ── CHART ──
+var BINT={live:'1m','1m':'1m','1H':'1h','1D':'1d','1W':'4h','1Mo':'1d'};
+var BLIMIT={live:60,'1m':60,'1H':60,'1D':30,'1W':42,'1Mo':30};
+var ICO_LINE='<polyline points="2 14 6 8 10 11 14 5 18 9"/>';
+var ICO_CANDLE='<line x1="4" y1="2" x2="4" y2="4"/><rect x="2" y="4" width="4" height="7" rx="0.5"/><line x1="4" y1="11" x2="4" y2="14"/><line x1="10" y1="5" x2="10" y2="7"/><rect x="8" y="7" width="4" height="6" rx="0.5"/><line x1="10" y1="13" x2="10" y2="16"/><line x1="16" y1="3" x2="16" y2="6"/><rect x="14" y="6" width="4" height="5" rx="0.5"/><line x1="16" y1="11" x2="16" y2="14"/>';
+function toggleChartType(){
+  chartType=chartType==='line'?'candle':'line';
+  document.getElementById('chartTypeIco').innerHTML=chartType==='candle'?ICO_LINE:ICO_CANDLE;
+  if(curAsset&&chartCache[curAsset.sym+'_'+curRange])drawChart(curAsset,chartCache[curAsset.sym+'_'+curRange]);
+}
+function setRange(btn,range){
+  document.querySelectorAll('.time-btn').forEach(function(b){b.classList.remove('active');});
+  btn.classList.add('active');curRange=range;
+  if(curAsset)loadChart(curAsset,range);
+}
+async function loadChart(asset,range){
+  var cacheKey=asset.sym+'_'+range;
+  var ttl=range==='live'?30000:60000;
+  if(chartCache[cacheKey]&&(Date.now()-chartCache[cacheKey].ts)<ttl){drawChart(asset,chartCache[cacheKey].prices);return;}
+  document.getElementById('chartLoading').style.display='flex';
+  var prices=null;
+  try{
+    var url='https://api.binance.com/api/v3/klines?symbol='+asset.id+'&interval='+BINT[range]+'&limit='+BLIMIT[range];
+    var ctrl=new AbortController();var tid=setTimeout(function(){ctrl.abort();},4000);
+    var r=await fetch(url,{signal:ctrl.signal});clearTimeout(tid);
+    if(r.ok){var d=await r.json();if(Array.isArray(d)&&d.length>=2)prices=d.map(function(k){return[parseInt(k[0]),parseFloat(k[4])];});}
+  }catch(e){}
+  if(!prices){
+    var n=42,now=Date.now(),step={live:60000,'1m':60000,'1H':60000,'1D':3600000,'1W':14400000,'1Mo':86400000}[range]||14400000;
+    prices=[];var p=asset.price*(1+asset.change/100);
+    for(var i=0;i<n;i++){p=p*(1+(Math.random()-.5)*.022);prices.push([now-(n-i)*step,p]);}
+    prices.push([now,asset.price]);
+  }
+  chartCache[cacheKey]={ts:Date.now(),prices:prices};
+  drawChart(asset,prices);
+  document.getElementById('chartLoading').style.display='none';
+}
+function drawChart(asset,prices){
+  if(prices&&prices.ts)prices=prices.prices; // compat
+  var canvas=document.getElementById('detCanvas');
+  var dpr=window.devicePixelRatio||1,W=canvas.offsetWidth,H=canvas.offsetHeight||200;
+  canvas.width=W*dpr;canvas.height=H*dpr;
+  var ctx=canvas.getContext('2d');ctx.scale(dpr,dpr);
+  if(!prices||prices.length<2)return;
+  var isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  var pad={t:16,b:8,l:4,r:4},cw=W-pad.l-pad.r,ch=H-pad.t-pad.b;
+  if(chartType==='candle'){
+    var candles=prices.map(function(p,i){
+      var c=p[1],prev=i>0?prices[i-1][1]:c,o=prev;
+      var s1=((i*2654435761)>>>0)/4294967296,s2=((i*2246822519)>>>0)/4294967296;
+      return{o:o,h:Math.max(o,c)*(1+s1*.012),l:Math.min(o,c)*(1-s2*.012),c:c};
+    });
+    var allV=[];candles.forEach(function(c){allV.push(c.h,c.l);});
+    var mn=Math.min.apply(null,allV),mx=Math.max.apply(null,allV),rng=mx-mn||1;
+    ctx.clearRect(0,0,W,H);
+    var n=candles.length,cw2=cw/n,bw=Math.max(2,cw2*.55);
+    candles.forEach(function(c,i){
+      var x=pad.l+i*cw2+cw2/2;
+      var yO=pad.t+(1-(c.o-mn)/rng)*ch,yC=pad.t+(1-(c.c-mn)/rng)*ch;
+      var yH=pad.t+(1-(c.h-mn)/rng)*ch,yL=pad.t+(1-(c.l-mn)/rng)*ch;
+      var col=c.c>=c.o?(isDark?'#34D873':'#16C172'):(isDark?'#FB4570':'#E11D48');
+      ctx.beginPath();ctx.moveTo(x,yH);ctx.lineTo(x,yL);ctx.strokeStyle=col;ctx.lineWidth=1;ctx.stroke();
+      ctx.fillStyle=col;ctx.fillRect(x-bw/2,Math.min(yO,yC),bw,Math.max(1.5,Math.abs(yC-yO)));
+    });
+  }else{
+    var vals=prices.map(function(p){return p[1];});
+    var mn=Math.min.apply(null,vals),mx=Math.max.apply(null,vals),rng=mx-mn||1;
+    var up=vals[vals.length-1]>=vals[0];
+    var lc=up?(isDark?'#34D873':'#16C172'):(isDark?'#FB4570':'#E11D48');
+    var ft=up?(isDark?'rgba(52,216,115,.22)':'rgba(22,193,114,.18)'):(isDark?'rgba(251,69,112,.22)':'rgba(225,29,72,.14)');
+    ctx.clearRect(0,0,W,H);
+    var pts=prices.map(function(p,i){return{x:pad.l+(i/(prices.length-1))*cw,y:pad.t+(1-(p[1]-mn)/rng)*ch};});
+    var grad=ctx.createLinearGradient(0,pad.t,0,H);grad.addColorStop(0,ft);grad.addColorStop(1,'transparent');
+    ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);pts.slice(1).forEach(function(p){ctx.lineTo(p.x,p.y);});
+    ctx.lineTo(pts[pts.length-1].x,H);ctx.lineTo(pts[0].x,H);ctx.closePath();ctx.fillStyle=grad;ctx.fill();
+    ctx.beginPath();ctx.moveTo(pts[0].x,pts[0].y);pts.slice(1).forEach(function(p){ctx.lineTo(p.x,p.y);});
+    ctx.strokeStyle=lc;ctx.lineWidth=2;ctx.lineJoin='round';ctx.stroke();
+    var lp=pts[pts.length-1];ctx.beginPath();ctx.arc(lp.x,lp.y,4,0,Math.PI*2);ctx.fillStyle=lc;ctx.fill();
+  }
+}
+
+// ── SHEET ──
+var activeSheet=null;
+function openSheet(id){
+  closeSheet();
+  activeSheet=id;
+  document.getElementById('overlay').classList.add('show');
+  setTimeout(function(){document.getElementById(id).classList.add('open');},10);
+}
+function closeSheet(){
+  document.getElementById('overlay').classList.remove('show');
+  document.querySelectorAll('.sheet').forEach(function(s){s.classList.remove('open');});
+  stopScanner();
+  activeSheet=null;
+}
+
+// ── SEND ──
+function openSend(){
+  updateSendBal();
+  openSheet('sendSheet');
+}
+function updateSendBal(){
+  var sym=document.getElementById('sendSymbol').value;
+  document.getElementById('sendBalShow').textContent=fmtAmt(holdings[sym]||0)+' '+sym;
+}
+function setMaxSend(){
+  var sym=document.getElementById('sendSymbol').value;
+  document.getElementById('sendAmt').value=fmtAmt(holdings[sym]||0);
+  updateSendUsd();
+}
+function updateSendUsd(){
+  var sym=document.getElementById('sendSymbol').value;
+  var amt=parseFloat(document.getElementById('sendAmt').value)||0;
+  document.getElementById('sendUsdHint').textContent='≈ '+fmtV(amt*PRICES[sym]);
+}
+async function doSend(){
+  var sym=document.getElementById('sendSymbol').value;
+  var toUser=document.getElementById('sendTo').value.trim().replace('@','').toLowerCase();
+  var amt=parseFloat(document.getElementById('sendAmt').value)||0;
+  if(!toUser){showToast('Isi username tujuan','err');return;}
+  if(amt<=0){showToast('Isi jumlah','err');return;}
+  if((holdings[sym]||0)<amt){showToast('Saldo tidak cukup','err');return;}
+  if(toUser===curProfile.username){showToast('Tidak bisa kirim ke diri sendiri','err');return;}
+  var {data:target}=await sb.from('profiles').select('id,username').eq('username',toUser).single();
+  if(!target){showToast('User tidak ditemukan','err');return;}
+  // deduct sender
+  var newHold=(holdings[sym]||0)-amt;
+  await sb.from('holdings').upsert({user_id:curUser.id,symbol:sym,amount:newHold,updated_at:new Date().toISOString()});
+  // add receiver
+  var {data:targetHold}=await sb.from('holdings').select('amount').eq('user_id',target.id).eq('symbol',sym).single();
+  var tAmt=(targetHold?targetHold.amount:0)+amt;
+  await sb.from('holdings').upsert({user_id:target.id,symbol:sym,amount:tAmt,updated_at:new Date().toISOString()});
+  // log tx
+  await sb.from('transactions').insert({user_id:curUser.id,type:'send',symbol:sym,amount:amt,price_usd:PRICES[sym],to_user_id:target.id});
+  await sb.from('transactions').insert({user_id:target.id,type:'receive',symbol:sym,amount:amt,price_usd:PRICES[sym],from_user_id:curUser.id});
+  holdings[sym]=newHold;
+  updateHeroBalance();renderWallet(WALLET);
+  closeSheet();
+  showToast('Berhasil kirim '+fmtAmt(amt)+' '+sym+' ke @'+toUser,'ok');
+}
+
+// ── RECEIVE ──
+async function openReceive(){
+  openSheet('receiveSheet');
+  var username=curProfile?curProfile.username:'unknown';
+  var qrData='xentra://send?to='+username;
+  document.getElementById('qrAddr').textContent='@'+username;
+  var canvas=document.getElementById('qrCanvas');
+  try{await QRCode.toCanvas(canvas,qrData,{width:200,margin:1,color:{dark:'#000',light:'#fff'}});}catch(e){}
+}
+function copyAddr(){
+  navigator.clipboard&&navigator.clipboard.writeText(curProfile?curProfile.username:'');
+  showToast('Username disalin!');
+}
+
+// ── SCANNER ──
+async function openScanner(){
+  openSheet('scannerSheet');
+  try{
+    var stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+    scanStream=stream;
+    var video=document.getElementById('scanVideo');
+    video.srcObject=stream;
+    video.play();
+    var cvs=document.createElement('canvas');
+    scanTimer=setInterval(function(){
+      if(video.readyState===video.HAVE_ENOUGH_DATA){
+        cvs.width=video.videoWidth;cvs.height=video.videoHeight;
+        var ctx=cvs.getContext('2d');ctx.drawImage(video,0,0);
+        var img=ctx.getImageData(0,0,cvs.width,cvs.height);
+        var code=jsQR(img.data,img.width,img.height);
+        if(code){
+          var url=code.data;
+          var match=url.match(/xentra:\/\/send\?to=([^&]+)/);
+          if(match){
+            document.getElementById('sendTo').value='@'+match[1];
+            stopScanner();closeSheet();
+            showToast('QR berhasil discan!','ok');
+          }
+        }
+      }
+    },300);
+  }catch(e){showToast('Tidak bisa akses kamera','err');}
+}
+function stopScanner(){
+  if(scanTimer){clearInterval(scanTimer);scanTimer=null;}
+  if(scanStream){scanStream.getTracks().forEach(function(t){t.stop();});scanStream=null;}
+  var v=document.getElementById('scanVideo');if(v)v.srcObject=null;
+}
+
+// ── BUY ──
+function openBuySheet(sym){
+  if(sym&&sym!=='undefined'){document.getElementById('buySymbol').value=sym;}
+  document.getElementById('buyCoinsShow').textContent=(curProfile?curProfile.coins.toFixed(0):0)+' koin';
+  updateBuyCalc();
+  openSheet('buySheet');
+}
+function setMaxBuy(){document.getElementById('buyCoins').value=curProfile?Math.floor(curProfile.coins):'';updateBuyCalc();}
+function updateBuyCalc(){
+  var sym=document.getElementById('buySymbol').value;
+  var coins=parseFloat(document.getElementById('buyCoins').value)||0;
+  var crypto=coins/PRICES[sym];
+  document.getElementById('buyHint').textContent='= '+fmtAmt(crypto)+' '+sym;
+}
+async function doBuy(){
+  var sym=document.getElementById('buySymbol').value;
+  var coins=parseFloat(document.getElementById('buyCoins').value)||0;
+  if(coins<=0){showToast('Isi jumlah koin','err');return;}
+  if(coins>curProfile.coins){showToast('Koin tidak cukup','err');return;}
+  var crypto=coins/PRICES[sym];
+  var newCoins=curProfile.coins-coins;
+  var newHold=(holdings[sym]||0)+crypto;
+  await sb.from('profiles').update({coins:newCoins}).eq('id',curUser.id);
+  await sb.from('holdings').upsert({user_id:curUser.id,symbol:sym,amount:newHold,updated_at:new Date().toISOString()});
+  await sb.from('transactions').insert({user_id:curUser.id,type:'buy',symbol:sym,amount:crypto,price_usd:PRICES[sym],coins_used:coins});
+  curProfile.coins=newCoins;holdings[sym]=newHold;
+  updateHeroBalance();renderWallet(WALLET);
+  closeSheet();
+  showToast('Berhasil beli '+fmtAmt(crypto)+' '+sym,'ok');
+}
+
+// ── SELL ──
+function openSellSheet(sym){
+  if(sym&&sym!=='undefined'){document.getElementById('sellSymbol').value=sym;}
+  updateSellCalc();openSheet('sellSheet');
+}
+function updateSellCalc(){
+  var sym=document.getElementById('sellSymbol').value;
+  var amt=parseFloat(document.getElementById('sellAmt').value)||0;
+  var usd=amt*PRICES[sym];
+  document.getElementById('sellBalShow').textContent=fmtAmt(holdings[sym]||0)+' '+sym;
+  document.getElementById('sellHint').textContent='= '+fmtV(usd)+' → '+Math.floor(usd)+' koin';
+}
+function setMaxSell(){
+  var sym=document.getElementById('sellSymbol').value;
+  document.getElementById('sellAmt').value=fmtAmt(holdings[sym]||0);
+  updateSellCalc();
+}
+async function doSell(){
+  var sym=document.getElementById('sellSymbol').value;
+  var amt=parseFloat(document.getElementById('sellAmt').value)||0;
+  if(amt<=0){showToast('Isi jumlah','err');return;}
+  if((holdings[sym]||0)<amt){showToast('Saldo tidak cukup','err');return;}
+  var usd=amt*PRICES[sym];
+  var coins=Math.floor(usd);
+  var newHold=(holdings[sym]||0)-amt;
+  var newCoins=curProfile.coins+coins;
+  await sb.from('profiles').update({coins:newCoins}).eq('id',curUser.id);
+  await sb.from('holdings').upsert({user_id:curUser.id,symbol:sym,amount:newHold,updated_at:new Date().toISOString()});
+  await sb.from('transactions').insert({user_id:curUser.id,type:'sell',symbol:sym,amount:amt,price_usd:PRICES[sym],coins_used:-coins});
+  curProfile.coins=newCoins;holdings[sym]=newHold;
+  updateHeroBalance();renderWallet(WALLET);
+  closeSheet();
+  showToast('Berhasil jual '+fmtAmt(amt)+' '+sym+' → +'+coins+' koin','ok');
+}
+
+// ── SWAP ──
+function initSwap(){
+  document.getElementById('swapFromIco').innerHTML=ICO[swapFrom]||'';
+  document.getElementById('swapToIco').innerHTML=ICO[swapTo]||'';
+  document.getElementById('swapFromSym').textContent=swapFrom;
+  document.getElementById('swapToSym').textContent=swapTo;
+  document.getElementById('swapFromBal').textContent=fmtAmt(holdings[swapFrom]||0)+' '+swapFrom;
+  document.getElementById('swapToBal').textContent=fmtAmt(holdings[swapTo]||0)+' '+swapTo;
+  calcSwap();
+}
+function calcSwap(){
+  var amt=parseFloat(document.getElementById('swapFromAmt').value)||0;
+  var rate=PRICES[swapFrom]/PRICES[swapTo];
+  var out=amt*rate;
+  document.getElementById('swapToAmt').value=out>0?fmtAmt(out):'';
+  document.getElementById('swapRate').textContent='1 '+swapFrom+' = '+fmtAmt(rate)+' '+swapTo;
+}
+function swapFlip(){
+  var tmp=swapFrom;swapFrom=swapTo;swapTo=tmp;
+  document.getElementById('swapFromAmt').value='';
+  document.getElementById('swapToAmt').value='';
+  initSwap();
+}
+function openSwapPicker(target){
+  swapPickerTarget=target;
+  document.getElementById('swapPickerTitle').textContent=target==='from'?'Pilih Koin Asal':'Pilih Koin Tujuan';
+  var other=target==='from'?swapTo:swapFrom;
+  document.getElementById('swapPickerList').innerHTML=COINS.filter(function(c){return c!==other;}).map(function(c){
+    return'<div class="a-row" onclick="pickSwapCoin(\''+c+'\')" style="cursor:pointer">'
+      +'<div class="a-ico">'+ico(c,46)+'</div>'
+      +'<div class="a-left"><div class="a-sym">'+c+'</div><div style="font-size:12px;color:var(--tx3);margin-top:4px">'+fmtAmt(holdings[c]||0)+' tersedia</div></div>'
+      +'<div style="font-size:14px;font-weight:700;color:var(--tx)">'+fmtP(PRICES[c])+'</div></div>';
+  }).join('');
+  openSheet('swapPickerSheet');
+}
+function pickSwapCoin(c){
+  if(swapPickerTarget==='from')swapFrom=c;else swapTo=c;
+  closeSheet();initSwap();
+}
+async function doSwap(){
+  var amt=parseFloat(document.getElementById('swapFromAmt').value)||0;
+  if(amt<=0){showToast('Isi jumlah','err');return;}
+  if((holdings[swapFrom]||0)<amt){showToast('Saldo '+swapFrom+' tidak cukup','err');return;}
+  if(swapFrom===swapTo){showToast('Koin tidak boleh sama','err');return;}
+  var rate=PRICES[swapFrom]/PRICES[swapTo];
+  var out=amt*rate;
+  var newFrom=(holdings[swapFrom]||0)-amt;
+  var newTo=(holdings[swapTo]||0)+out;
+  await sb.from('holdings').upsert({user_id:curUser.id,symbol:swapFrom,amount:newFrom,updated_at:new Date().toISOString()});
+  await sb.from('holdings').upsert({user_id:curUser.id,symbol:swapTo,amount:newTo,updated_at:new Date().toISOString()});
+  await sb.from('transactions').insert({user_id:curUser.id,type:'swap',symbol:swapFrom,amount:amt,price_usd:PRICES[swapFrom],note:swapTo});
+  holdings[swapFrom]=newFrom;holdings[swapTo]=newTo;
+  document.getElementById('swapFromAmt').value='';document.getElementById('swapToAmt').value='';
+  updateHeroBalance();renderWallet(WALLET);initSwap();
+  showToast('Swap '+fmtAmt(amt)+' '+swapFrom+' → '+fmtAmt(out)+' '+swapTo,'ok');
+}
+
+// ── PROFILE ──
+async function loadProfile(){
+  if(!curProfile)return;
+  document.getElementById('profAvatar').textContent=curProfile.username[0].toUpperCase();
+  document.getElementById('profName').textContent='@'+curProfile.username;
+  document.getElementById('profEmail').textContent=curUser.email;
+  document.getElementById('profCoins').textContent=curProfile.coins.toFixed(0);
+  // quest
+  await checkQuest();
+  // leaderboard
+  await loadLeaderboard();
+  // tx history
+  await loadTxHistory();
+}
+
+// ── QUEST ──
+async function checkQuest(){
+  var today=new Date().toISOString().split('T')[0];
+  var {data}=await sb.from('quest_logs').select('*').eq('user_id',curUser.id).eq('claimed_at',today).single();
+  var btn=document.getElementById('questBtn');
+  var streak=0;
+  if(data){btn.disabled=true;btn.textContent='✓ Sudah diklaim hari ini';streak=data.streak;}
+  else{btn.disabled=false;btn.textContent='Klaim +1 Koin';}
+  // get latest streak
+  var {data:last}=await sb.from('quest_logs').select('streak').eq('user_id',curUser.id).order('claimed_at',{ascending:false}).limit(1).single();
+  if(last)streak=last.streak;
+  document.getElementById('questStreak').textContent='🔥 Streak: '+streak+' hari';
+  // show dot if claimable
+  document.getElementById('questDot').style.display=(!data)?'':'none';
+}
+async function claimQuest(){
+  var today=new Date().toISOString().split('T')[0];
+  var yesterday=new Date(Date.now()-86400000).toISOString().split('T')[0];
+  var {data:lastLog}=await sb.from('quest_logs').select('*').eq('user_id',curUser.id).order('claimed_at',{ascending:false}).limit(1).single();
+  var streak=lastLog&&lastLog.claimed_at===yesterday?lastLog.streak+1:1;
+  var coins=streak>=7?3:streak>=3?2:1;
+  await sb.from('quest_logs').insert({user_id:curUser.id,claimed_at:today,streak:streak,coins_earned:coins});
+  var newCoins=curProfile.coins+coins;
+  await sb.from('profiles').update({coins:newCoins}).eq('id',curUser.id);
+  curProfile.coins=newCoins;
+  document.getElementById('questBtn').disabled=true;
+  document.getElementById('questBtn').textContent='✓ Sudah diklaim hari ini';
+  document.getElementById('questStreak').textContent='🔥 Streak: '+streak+' hari';
+  document.getElementById('questDot').style.display='none';
+  updateHeroBalance();
+  showToast('🎉 +'+coins+' koin! Streak '+streak+' hari','ok');
+}
+
+// ── LEADERBOARD ──
+async function loadLeaderboard(){
+  var {data:profiles}=await sb.from('profiles').select('id,username,coins');
+  if(!profiles)return;
+  var {data:allHoldings}=await sb.from('holdings').select('user_id,symbol,amount');
+  var totals=profiles.map(function(p){
+    var holds=allHoldings?allHoldings.filter(function(h){return h.user_id===p.id;}):[];
+    var total=holds.reduce(function(s,h){return s+(PRICES[h.symbol]||0)*h.amount;},0);
+    return{username:p.username,total:total};
+  }).sort(function(a,b){return b.total-a.total;});
+  document.getElementById('leaderboard').innerHTML=totals.slice(0,10).map(function(u,i){
+    var medals=['🥇','🥈','🥉'];
+    return'<div class="lb-row">'
+      +'<div class="lb-rank '+(i<3?'top':'')+'">'+( medals[i]||i+1)+'</div>'
+      +'<div class="lb-avatar">'+u.username[0].toUpperCase()+'</div>'
+      +'<div class="lb-info"><div class="lb-name">@'+u.username+'</div><div class="lb-val">'+fmtV(u.total)+'</div></div>'
+      +'<div class="lb-badge">'+fmtV(u.total)+'</div>'
+      +'</div>';
+  }).join('')||'<div class="empty-state"><div class="e-sub">Belum ada data</div></div>';
+}
+
+// ── TX HISTORY ──
+async function loadTxHistory(){
+  var {data:txs}=await sb.from('transactions').select('*').or('user_id.eq.'+curUser.id+',to_user_id.eq.'+curUser.id).order('created_at',{ascending:false}).limit(30);
+  if(!txs||!txs.length){document.getElementById('txHistory').innerHTML='<div class="empty-state"><div class="e-sub">Belum ada transaksi</div></div>';return;}
+  var typeIcon={
+    buy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+    sell:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+    send:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="8 7 17 7 17 16"/></svg>',
+    receive:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="6 13 12 19 18 13"/></svg>',
+    swap:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>'
+  };
+  document.getElementById('txHistory').innerHTML=txs.map(function(t){
+    var isPos=t.type==='receive'||t.type==='sell';
+    var label={buy:'Beli',sell:'Jual',send:'Kirim',receive:'Terima',swap:'Swap'}[t.type]||t.type;
+    var sub=t.type==='swap'?t.symbol+' → '+(t.note||''):t.symbol;
+    return'<div class="tx-row">'
+      +'<div class="tx-ico tx-'+t.type+'">'+(typeIcon[t.type]||'')+'</div>'
+      +'<div class="tx-info"><div class="tx-type">'+label+'</div><div class="tx-sub">'+sub+'</div></div>'
+      +'<div class="tx-val"><div class="tx-amount '+(isPos?'pos':'neg')+'">'+(isPos?'+':'-')+fmtAmt(t.amount||0)+' '+(t.symbol||'')+'</div>'
+      +'<div class="tx-time">'+fmtTime(t.created_at)+'</div></div>'
+      +'</div>';
+  }).join('');
+}
+
+// ── SETTINGS ──
+function showSettings(){openSheet('settingsSheet');}
+
+// ── INIT ──
+async function init(){
+  applyDark();
+  var {data:{session}}=await sb.auth.getSession();
+  if(session){
+    curUser=session.user;
+    await loadUser();
+  }
+  sb.auth.onAuthStateChange(async function(event,session){
+    if(event==='SIGNED_IN'&&session){
+      curUser=session.user;
+      await loadUser();
+    }else if(event==='SIGNED_OUT'){
+      document.getElementById('app').style.display='none';
+      document.getElementById('authScreen').style.display='flex';
+    }
+  });
+}
+
+async function loadUser(){
+  var {data:profile}=await sb.from('profiles').select('*').eq('id',curUser.id).single();
+  if(!profile){
+    document.getElementById('authErr').textContent='Profil tidak ditemukan';
+    return;
+  }
+  curProfile=profile;
+  var {data:holds}=await sb.from('holdings').select('*').eq('user_id',curUser.id);
+  holdings={};
+  if(holds)holds.forEach(function(h){holdings[h.symbol]=h.amount;});
+  document.getElementById('authScreen').style.display='none';
+  document.getElementById('app').style.display='flex';
+  renderWallet(WALLET);
+  updateHeroBalance();
+  fetchMarketPrices();
+  setInterval(fetchMarketPrices,30000);
+  // quest dot
+  var today=new Date().toISOString().split('T')[0];
+  var {data:q}=await sb.from('quest_logs').select('id').eq('user_id',curUser.id).eq('claimed_at',today).single();
+  document.getElementById('questDot').style.display=(!q)?'':'none';
+  // init swap icons
+  document.getElementById('swapFromIco').innerHTML=ICO[swapFrom]||'';
+  document.getElementById('swapToIco').innerHTML=ICO[swapTo]||'';
+}
+
+document.getElementById('mainContent').addEventListener('scroll',function(){
+  document.getElementById('topbar').classList.toggle('shadowed',this.scrollTop>8);
+},{passive:true});
+
+// swipe back detail
+var _tx=0;
+document.getElementById('detPage').addEventListener('touchstart',function(e){_tx=e.touches[0].clientX;},{passive:true});
+document.getElementById('detPage').addEventListener('touchend',function(e){if(e.changedTouches[0].clientX-_tx>80)closeDetail();},{passive:true});
+
+init();
+</script>
+</body>
+</html>

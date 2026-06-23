@@ -324,8 +324,8 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
       <button class="ico-btn" onclick="toggleDark()">
         <svg id="darkIco" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
       </button>
-      <button class="ico-btn" onclick="openReceive()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="7" y1="12" x2="17" y2="12"/></svg>
+      <button class="ico-btn" onclick="openLeaderboard()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
       </button>
     </div>
   </div>
@@ -446,12 +446,6 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
         </button>
         <div style="font-size:12px;color:var(--tx3);margin-top:10px;text-align:center" id="questStreak">Streak: 0 hari</div>
       </div>
-      <!-- LEADERBOARD -->
-      <div class="section-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="display:inline;vertical-align:middle;margin-right:6px"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
-        Leaderboard
-      </div>
-      <div id="leaderboard"></div>
       <!-- TX HISTORY -->
       <div class="section-title">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="display:inline;vertical-align:middle;margin-right:6px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
@@ -540,6 +534,18 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
       </div>
     </div>
   </div>
+</div>
+
+<!-- LEADERBOARD FULLPAGE -->
+<div class="fullpage" id="lbPage">
+  <div class="fp-topbar">
+    <button class="fp-back" onclick="closeLeaderboard()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <div class="fp-title">Leaderboard</div>
+    <div class="fp-spacer"></div>
+  </div>
+  <div class="fp-body" id="lbList" style="padding-top:8px;padding-bottom:40px;"></div>
 </div>
 
 <!-- AUTH SCREEN -->
@@ -722,7 +728,7 @@ const sb=supabase.createClient(SB_URL,SB_KEY);
 
 // ── ICONS ──
 var ICO={
-  BNB:'<circle cx="22" cy="22" r="22" fill="#F3BA2F"/><path fill="#fff" d="M13.68 22l-3.43-3.43 3.43-3.43 3.43 3.43zm8.32-8.32l5.79 5.79 3.43-3.43L22 7.57l-9.22 8.47 3.43 3.43zM30.32 22l3.43 3.43-3.43 3.43-3.43-3.43zm-8.32 8.32l-5.79-5.79-3.43 3.43L22 36.43l9.22-8.47-3.43-3.43zM22 25.43L18.57 22 22 18.57 25.43 22z"/>',
+  BNB:'<circle cx="22" cy="22" r="22" fill="#F3BA2F"/><path fill="#fff" d="M22 10.5l3.18 3.18-3.18 3.18-3.18-3.18zm-7.5 2.5l3.18 3.18L22 13l-4.32-4.32zm11.82 0L22 8.68 17.68 13l3.14 3.14L22 17.32l1.18-1.18zM14.5 22l3.18 3.18L22 20.86l4.32 4.32L22 29.5l-7.5-7.5zm15 0L22 29.5l4.32-4.32 3.18-3.18zM22 24.68l-3.18 3.18L22 31.04l3.18-3.18zM22 13l-1.18 1.18L22 15.36l1.18-1.18z"/>',
   BTC:'<circle cx="22" cy="22" r="22" fill="#F7931A"/><path d="M29.6 19.3c.4-2.6-1.6-4-4.3-4.9l.9-3.5-2.1-.5-.9 3.4c-.6-.1-1.1-.3-1.7-.4l.9-3.4-2.1-.5-.9 3.5-1.4-.3-2.9-.7-.6 2.2s1.6.4 1.5.4c.8.2.9.7.9 1.2l-2.2 8.6c-.1.2-.3.6-.8.4l-1.5-.4-1 2.4 2.7.7 1.5.4-.9 3.6 2.1.5.9-3.5c.6.1 1.1.3 1.7.4l-.9 3.5 2.1.5.9-3.6c3.6.7 6.3.4 7.4-2.8.9-2.6 0-4.1-1.9-5.1 1.4-.3 2.4-1.2 2.6-3zm-4.8 6.7c-.6 2.6-5.1 1.2-6.5.8l1.1-4.6c1.4.4 6.1 1.1 5.4 3.8zm.6-6.8c-.6 2.3-4.3 1.2-5.5.9l1-4.2c1.2.3 5.1.9 4.5 3.3z" fill="#fff"/>',
   ETH:'<circle cx="22" cy="22" r="22" fill="#627EEA"/><path d="M22 8v10.9l8.9 4-8.9-14.9z" fill="#fff" fill-opacity=".7"/><path d="M22 8l-8.9 14.9 8.9-4V8z" fill="#fff"/><path d="M22 27.7v6.3l8.9-12.3-8.9 6z" fill="#fff" fill-opacity=".7"/><path d="M22 34v-6.3l-8.9-6L22 34z" fill="#fff"/><path d="M22 26.1l8.9-5-8.9-4v9z" fill="#fff" fill-opacity=".45"/><path d="M13.1 21.1l8.9 5v-9l-8.9 4z" fill="#fff" fill-opacity=".7"/>',
   SOL:'__SOL__',
@@ -1405,7 +1411,6 @@ async function loadProfile(){
   document.getElementById('profEmail').textContent=curUser.email;
   document.getElementById('profCoins').textContent=curProfile.coins.toFixed(0);
   await checkQuest();
-  await loadLeaderboard();
   await loadTxHistory();
 }
 
@@ -1446,24 +1451,48 @@ async function claimQuest(){
 }
 
 // ── LEADERBOARD ──
+function openLeaderboard(){
+  document.getElementById('lbPage').classList.add('open');
+  document.body.style.overflow='hidden';
+  loadLeaderboard();
+}
+function closeLeaderboard(){
+  document.getElementById('lbPage').classList.remove('open');
+  document.body.style.overflow='';
+}
 async function loadLeaderboard(){
+  var wrap=document.getElementById('lbList');
+  wrap.innerHTML='<div style="display:flex;justify-content:center;padding:40px"><div class="spinner"></div></div>';
   var {data:profiles}=await sb.from('profiles').select('id,username,coins');
-  if(!profiles)return;
+  if(!profiles){wrap.innerHTML='<div class="empty-state"><div class="e-sub">Gagal memuat data</div></div>';return;}
   var {data:allHoldings}=await sb.from('holdings').select('user_id,symbol,amount');
   var totals=profiles.map(function(p){
     var holds=allHoldings?allHoldings.filter(function(h){return h.user_id===p.id;}):[];
     var total=holds.reduce(function(s,h){return s+(PRICES[h.symbol]||0)*h.amount;},0);
     return{username:p.username,total:total};
   }).sort(function(a,b){return b.total-a.total;});
-  document.getElementById('leaderboard').innerHTML=totals.slice(0,10).map(function(u,i){
-    var medals=['🥇','🥈','🥉'];
-    return'<div class="lb-row">'
-      +'<div class="lb-rank '+(i<3?'top':'')+'">'+( medals[i]||i+1)+'</div>'
-      +'<div class="lb-avatar">'+u.username[0].toUpperCase()+'</div>'
-      +'<div class="lb-info"><div class="lb-name">@'+u.username+'</div><div class="lb-val">'+fmtV(u.total)+'</div></div>'
-      +'<div class="lb-badge">'+fmtV(u.total)+'</div>'
+  if(!totals.length){wrap.innerHTML='<div class="empty-state"><div class="e-sub">Belum ada data</div></div>';return;}
+  // rank icons svg
+  var rankIco=[
+    '<svg viewBox="0 0 24 24" fill="#F4B728" width="22" height="22"><path d="M12 2l2.09 6.26H20l-5 3.64 1.91 5.86L12 14.27 7.09 17.76 9 11.9 4 8.26h5.91z"/></svg>',
+    '<svg viewBox="0 0 24 24" fill="#9CA1B0" width="22" height="22"><path d="M12 2l2.09 6.26H20l-5 3.64 1.91 5.86L12 14.27 7.09 17.76 9 11.9 4 8.26h5.91z"/></svg>',
+    '<svg viewBox="0 0 24 24" fill="#CD7F32" width="22" height="22"><path d="M12 2l2.09 6.26H20l-5 3.64 1.91 5.86L12 14.27 7.09 17.76 9 11.9 4 8.26h5.91z"/></svg>'
+  ];
+  var isMe=curProfile?curProfile.username:'';
+  wrap.innerHTML=totals.slice(0,20).map(function(u,i){
+    var isSelf=u.username===isMe;
+    return'<div style="display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--bg3);'+(isSelf?'background:var(--bdim);margin:0 -16px;padding:14px 16px;border-radius:14px;border-bottom:none;':'')+'">'
+      +'<div style="width:28px;text-align:center;flex-shrink:0">'+(i<3?rankIco[i]:'<span style="font-size:14px;font-weight:800;color:var(--tx3)">'+(i+1)+'</span>')+'</div>'
+      +'<div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--nav),#8B5CF6);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff;flex-shrink:0">'+u.username[0].toUpperCase()+'</div>'
+      +'<div style="flex:1;min-width:0">'
+        +'<div style="font-size:14px;font-weight:700;color:var(--tx)">@'+u.username+(isSelf?' <span style="font-size:11px;background:var(--nav);color:#fff;padding:2px 7px;border-radius:20px;font-weight:600">Kamu</span>':'')+'</div>'
+        +'<div style="font-size:12px;color:var(--tx2);margin-top:2px">Total aset</div>'
+      +'</div>'
+      +'<div style="text-align:right;flex-shrink:0">'
+        +'<div style="font-size:15px;font-weight:800;color:var(--tx)">'+fmtV(u.total)+'</div>'
+      +'</div>'
       +'</div>';
-  }).join('')||'<div class="empty-state"><div class="e-sub">Belum ada data</div></div>';
+  }).join('');
 }
 
 // ── TX HISTORY ──

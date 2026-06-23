@@ -71,9 +71,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 .hero{padding:10px 18px 22px;text-align:center;animation:fadeUp .5s cubic-bezier(.22,1,.36,1) both;}
 @keyframes fadeUp{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
 .hero-balance{font-size:50px;font-weight:500;color:var(--tx);letter-spacing:-.03em;line-height:1;}
-.hero-coins{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-size:14px;font-weight:600;color:var(--gold);background:rgba(244,183,40,.12);padding:6px 14px;border-radius:30px;}
-.hero-coins svg{width:14px;height:14px;}
-.hero-change{display:inline-flex;align-items:center;gap:6px;margin-top:8px;font-size:16px;font-weight:700;color:var(--gtext);}
+.hero-change{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:16px;font-weight:700;color:var(--gtext);}
 .hero-change.dn{color:var(--rtext);}
 .hero-change svg{width:13px;height:13px;}
 
@@ -182,24 +180,12 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 .det-scroll::-webkit-scrollbar{display:none;}
 
 /* ── PROFILE PAGE ── */
-.profile-page{position:fixed;inset:0;background:var(--bg);z-index:200;display:flex;flex-direction:column;max-width:560px;margin:0 auto;transform:translateX(100%);transition:transform .32s cubic-bezier(.22,1,.36,1);}
-.profile-page.open{transform:translateX(0);}
 .prof-scroll{flex:1;overflow-y:auto;padding-bottom:40px;}
 .prof-scroll::-webkit-scrollbar{display:none;}
 .prof-hero{padding:24px 20px 20px;text-align:center;}
 .prof-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--nav),#8B5CF6);display:flex;align-items:center;justify-content:center;margin:0 auto 12px;font-size:28px;font-weight:800;color:#fff;}
 .prof-name{font-size:20px;font-weight:800;color:var(--tx);}
 .prof-email{font-size:13px;color:var(--tx2);margin-top:3px;}
-.prof-coins-card{margin:0 18px 18px;padding:18px;background:linear-gradient(135deg,#F59E0B,#F4B728);border-radius:20px;}
-.prof-coins-lbl{font-size:13px;font-weight:600;color:rgba(0,0,0,.5);}
-.prof-coins-val{font-size:32px;font-weight:900;color:#000;margin-top:4px;}
-.prof-coins-sub{font-size:12px;color:rgba(0,0,0,.5);margin-top:2px;}
-.quest-card{margin:0 18px 18px;padding:18px;background:var(--bg3);border-radius:20px;}
-.quest-title{font-size:15px;font-weight:800;color:var(--tx);margin-bottom:4px;}
-.quest-desc{font-size:13px;color:var(--tx2);margin-bottom:14px;}
-.quest-btn{width:100%;padding:13px;background:var(--gold);border:none;border-radius:14px;font-size:14px;font-weight:700;color:#000;cursor:pointer;font-family:'Inter',sans-serif;}
-.quest-btn:disabled{opacity:.4;cursor:not-allowed;}
-.quest-streak{font-size:12px;color:var(--tx3);margin-top:10px;text-align:center;}
 
 /* ── LEADERBOARD ── */
 .lb-row{display:flex;align-items:center;gap:12px;padding:13px 18px;}
@@ -242,26 +228,37 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 
 /* ── QR ── */
 .qr-wrap{display:flex;flex-direction:column;align-items:center;padding:0 20px 20px;}
-.qr-canvas-wrap{background:#fff;padding:16px;border-radius:20px;margin-bottom:16px;}
+.qr-canvas-wrap{background:#fff;padding:16px;border-radius:20px;margin-bottom:16px;border:1px solid #eee;}
 .qr-addr{font-size:13px;color:var(--tx2);text-align:center;word-break:break-all;line-height:1.6;}
-.scan-wrap{position:relative;width:100%;border-radius:20px;overflow:hidden;background:#000;}
-.scan-wrap video{width:100%;display:block;border-radius:20px;}
+
+/* ── SCANNER ── */
+.scan-wrap{position:relative;width:100%;border-radius:20px;overflow:hidden;background:#000;aspect-ratio:1/1;max-height:320px;}
+.scan-wrap video{width:100%;height:100%;display:block;object-fit:cover;}
 .scan-guide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none;}
-.scan-box{width:200px;height:200px;border:3px solid #fff;border-radius:16px;box-shadow:0 0 0 2000px rgba(0,0,0,.5);}
+.scan-frame{width:200px;height:200px;position:relative;}
+.scan-frame::before,.scan-frame::after{content:'';position:absolute;width:28px;height:28px;border-color:#fff;border-style:solid;}
+.scan-frame::before{top:0;left:0;border-width:3px 0 0 3px;border-radius:4px 0 0 0;}
+.scan-frame::after{top:0;right:0;border-width:3px 3px 0 0;border-radius:0 4px 0 0;}
+.scan-frame-b{position:absolute;bottom:0;left:0;right:0;display:flex;justify-content:space-between;}
+.scan-frame-b::before,.scan-frame-b::after{content:'';width:28px;height:28px;border-color:#fff;border-style:solid;}
+.scan-frame-b::before{border-width:0 0 3px 3px;border-radius:0 0 0 4px;}
+.scan-frame-b::after{border-width:0 3px 3px 0;border-radius:0 0 4px 0;}
+.scan-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);}
+.scan-window{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:200px;height:200px;box-shadow:0 0 0 2000px rgba(0,0,0,.55);}
 
 /* ── SWAP ── */
-.swap-page{padding:20px;}
-.swap-box{background:var(--bg3);border-radius:20px;padding:16px;margin-bottom:10px;}
-.swap-lbl{font-size:12px;color:var(--tx3);font-weight:600;margin-bottom:8px;}
-.swap-row{display:flex;align-items:center;gap:12px;}
-.swap-coin-btn{display:flex;align-items:center;gap:8px;background:var(--bg2);border:none;border-radius:12px;padding:8px 12px;cursor:pointer;font-family:'Inter',sans-serif;flex-shrink:0;}
-.swap-coin-btn svg{width:28px;height:28px;}
-.swap-coin-sym{font-size:15px;font-weight:800;color:var(--tx);}
-.swap-input{flex:1;background:none;border:none;font-size:22px;font-weight:700;color:var(--tx);outline:none;font-family:'Inter',sans-serif;text-align:right;width:0;}
-.swap-mid{display:flex;justify-content:center;margin:4px 0;}
-.swap-mid-btn{width:40px;height:40px;border-radius:50%;background:var(--bg3);border:2px solid var(--bg);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);}
-.swap-mid-btn svg{width:18px;height:18px;}
-.swap-rate{text-align:center;font-size:13px;color:var(--tx3);margin:8px 0 16px;}
+.swap-fp-box{background:var(--bg3);border-radius:20px;padding:16px;margin-bottom:4px;}
+.swap-fp-lbl{font-size:12px;color:var(--tx3);font-weight:600;margin-bottom:10px;}
+.swap-fp-row{display:flex;align-items:center;gap:10px;}
+.swap-fp-coin{display:flex;align-items:center;gap:8px;background:var(--bg2);border:none;border-radius:12px;padding:8px 12px 8px 8px;cursor:pointer;font-family:'Inter',sans-serif;flex-shrink:0;}
+.swap-fp-coin svg{display:block;}
+.swap-fp-sym{font-size:15px;font-weight:800;color:var(--tx);}
+.swap-fp-input{flex:1;background:none;border:none;font-size:24px;font-weight:700;color:var(--tx);outline:none;font-family:'Inter',sans-serif;text-align:right;min-width:0;}
+.swap-fp-mid{display:flex;justify-content:center;align-items:center;height:36px;position:relative;z-index:1;}
+.swap-fp-mid-btn{width:36px;height:36px;border-radius:50%;background:var(--bg);border:2px solid var(--bg3);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);}
+.swap-fp-mid-btn svg{width:16px;height:16px;}
+.swap-fp-bal{font-size:12px;color:var(--tx3);margin-top:8px;}
+.swap-fp-rate{text-align:center;font-size:13px;color:var(--tx3);padding:10px 0;}
 
 /* ── FULLPAGE ── */
 .fullpage{position:fixed;inset:0;background:var(--bg);z-index:300;display:flex;flex-direction:column;max-width:560px;margin:0 auto;transform:translateX(100%);transition:transform .32s cubic-bezier(.22,1,.36,1);}
@@ -287,20 +284,12 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 .fp-btn:active{opacity:.85;}
 .fp-btn:disabled{opacity:.4;}
 
-/* swap fullpage */
-.swap-fp-box{background:var(--bg3);border-radius:20px;padding:16px;margin-bottom:4px;}
-.swap-fp-lbl{font-size:12px;color:var(--tx3);font-weight:600;margin-bottom:10px;}
-.swap-fp-row{display:flex;align-items:center;gap:10px;}
-.swap-fp-coin{display:flex;align-items:center;gap:8px;background:var(--bg2);border:none;border-radius:12px;padding:8px 12px 8px 8px;cursor:pointer;font-family:'Inter',sans-serif;flex-shrink:0;}
-.swap-fp-coin svg{display:block;}
-.swap-fp-sym{font-size:15px;font-weight:800;color:var(--tx);}
-.swap-fp-input{flex:1;background:none;border:none;font-size:24px;font-weight:700;color:var(--tx);outline:none;font-family:'Inter',sans-serif;text-align:right;min-width:0;}
-.swap-fp-mid{display:flex;justify-content:center;align-items:center;height:36px;position:relative;z-index:1;}
-.swap-fp-mid-btn{width:36px;height:36px;border-radius:50%;background:var(--bg);border:2px solid var(--bg3);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);}
-.swap-fp-mid-btn svg{width:16px;height:16px;}
-.swap-fp-bal{font-size:12px;color:var(--tx3);margin-top:8px;}
-.swap-fp-rate{text-align:center;font-size:13px;color:var(--tx3);padding:10px 0;}
-.swap-fp-confirm{margin:0 16px;margin-bottom:8px;}
+/* ── CUSTOM COIN PICKER (replaces native <select>) ── */
+.coin-picker-btn{width:100%;background:var(--bg3);border:2px solid transparent;border-radius:14px;padding:13px 16px;font-size:15px;color:var(--tx);display:flex;align-items:center;gap:10px;cursor:pointer;font-family:'Inter',sans-serif;font-weight:600;margin-bottom:14px;transition:border .2s;}
+.coin-picker-btn:focus{outline:none;border-color:var(--nav);}
+.coin-picker-btn .cpb-ico{width:28px;height:28px;flex-shrink:0;}
+.coin-picker-btn .cpb-sym{flex:1;text-align:left;}
+.coin-picker-btn .cpb-chev{width:16px;height:16px;color:var(--tx3);}
 
 /* ── TOAST ── */
 .toast-wrap{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:999;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;width:100%;max-width:520px;padding:0 18px;}
@@ -343,10 +332,6 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
     <div id="homeTab">
       <div class="hero">
         <div class="hero-balance" id="totalBalance">$0.00</div>
-        <div class="hero-coins" id="heroCoins">
-          <svg viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/><text x="12" y="16" text-anchor="middle" font-size="10" fill="#000" font-weight="800" font-family="Arial">C</text></svg>
-          <span id="heroCoinsVal">0 koin</span>
-        </div>
         <div class="hero-change up" id="heroChange">
           <svg viewBox="0 0 24 24" fill="currentColor"><polygon points="12 6 19 17 5 17"/></svg>
           <span>+0.00% hari ini</span>
@@ -439,23 +424,35 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
         <div class="prof-name" id="profName">—</div>
         <div class="prof-email" id="profEmail">—</div>
       </div>
-      <div class="prof-coins-card" style="margin:0 18px 18px;padding:18px;background:linear-gradient(135deg,#F59E0B,#F4B728);border-radius:20px;">
+      <div style="margin:0 18px 18px;padding:18px;background:linear-gradient(135deg,#F59E0B,#F4B728);border-radius:20px;">
         <div style="font-size:13px;font-weight:600;color:rgba(0,0,0,.5)">Koin Tersedia</div>
         <div style="font-size:32px;font-weight:900;color:#000;margin-top:4px" id="profCoins">0</div>
         <div style="font-size:12px;color:rgba(0,0,0,.5);margin-top:2px">1 koin = $1 · digunakan untuk beli crypto</div>
       </div>
       <!-- QUEST -->
       <div style="margin:0 18px 18px;padding:18px;background:var(--bg3);border-radius:20px;">
-        <div style="font-size:15px;font-weight:800;color:var(--tx);margin-bottom:4px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" style="display:inline;vertical-align:middle;margin-right:6px"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Quest Harian</div>
+        <div style="font-size:15px;font-weight:800;color:var(--tx);margin-bottom:4px;display:flex;align-items:center;gap:8px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+          Quest Harian
+        </div>
         <div style="font-size:13px;color:var(--tx2);margin-bottom:14px">Login setiap hari untuk dapat koin gratis!</div>
-        <button class="quest-btn" id="questBtn" onclick="claimQuest()">Klaim +1 Koin</button>
-        <div class="quest-streak" id="questStreak">Streak: 0 hari</div>
+        <button style="width:100%;padding:13px;background:var(--gold);border:none;border-radius:14px;font-size:14px;font-weight:700;color:#000;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;" id="questBtn" onclick="claimQuest()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          Klaim +1 Koin
+        </button>
+        <div style="font-size:12px;color:var(--tx3);margin-top:10px;text-align:center" id="questStreak">Streak: 0 hari</div>
       </div>
       <!-- LEADERBOARD -->
-      <div class="section-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="display:inline;vertical-align:middle;margin-right:6px"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>Leaderboard</div>
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="display:inline;vertical-align:middle;margin-right:6px"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+        Leaderboard
+      </div>
       <div id="leaderboard"></div>
       <!-- TX HISTORY -->
-      <div class="section-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="display:inline;vertical-align:middle;margin-right:6px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>Riwayat Transaksi</div>
+      <div class="section-title">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="display:inline;vertical-align:middle;margin-right:6px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+        Riwayat Transaksi
+      </div>
       <div id="txHistory"></div>
       <!-- LOGOUT -->
       <div style="padding:18px">
@@ -521,7 +518,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
         <button class="time-btn" onclick="setRange(this,'1H')">1H</button>
         <button class="time-btn" onclick="setRange(this,'1D')">1D</button>
         <button class="time-btn active" onclick="setRange(this,'1W')">1W</button>
-        <button class="time-btn" onclick="setRange(this,'1Mo')">1M</button>
+        <button class="time-btn" onclick="setRange(this,'1Mo')">1Mo</button>
         <button class="time-btn chart-type-btn" id="chartTypeBtn" onclick="toggleChartType()">
           <svg id="chartTypeIco" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="17" height="17"><line x1="4" y1="2" x2="4" y2="4"/><rect x="2" y="4" width="4" height="7" rx="0.5"/><line x1="4" y1="11" x2="4" y2="14"/><line x1="10" y1="5" x2="10" y2="7"/><rect x="8" y="7" width="4" height="6" rx="0.5"/><line x1="10" y1="13" x2="10" y2="16"/><line x1="16" y1="3" x2="16" y2="6"/><rect x="14" y="6" width="4" height="5" rx="0.5"/><line x1="16" y1="11" x2="16" y2="14"/></svg>
         </button>
@@ -569,15 +566,19 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
     <button class="fp-back" onclick="closeSendPage()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
-    <div class="fp-title" id="sendPageTitle">Kirim BTC</div>
+    <div class="fp-title">Kirim Crypto</div>
     <div class="fp-spacer"></div>
   </div>
   <div class="fp-body">
+    <!-- custom coin picker -->
     <div class="fp-lbl">Koin</div>
-    <select class="form-input" id="sendSymbol" onchange="updateSendBal()">
-      <option>BTC</option><option>ETH</option><option>BNB</option><option>SOL</option><option>XRP</option>
-    </select>
-    <div class="fp-lbl">Alamat atau Username tujuan</div>
+    <button class="coin-picker-btn" id="sendCoinBtn" onclick="openCoinPicker('send')">
+      <span class="cpb-ico" id="sendCoinIco"></span>
+      <span class="cpb-sym" id="sendCoinSym">BTC</span>
+      <svg class="cpb-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+
+    <div class="fp-lbl">Username tujuan</div>
     <div class="fp-input-wrap">
       <input id="sendTo" placeholder="@username" autocomplete="off">
       <button onclick="openScanner()" style="background:none;border:none;cursor:pointer;color:var(--nav);display:flex;align-items:center;">
@@ -606,7 +607,9 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
   <div class="sheet-handle"></div>
   <div class="sheet-title">Receive / QR Kamu</div>
   <div class="qr-wrap">
-    <div class="qr-canvas-wrap"><canvas id="qrCanvas" width="200" height="200"></canvas></div>
+    <div class="qr-canvas-wrap">
+      <canvas id="qrCanvas" width="200" height="200"></canvas>
+    </div>
     <div class="qr-addr" id="qrAddr">—</div>
     <button class="primary-btn" style="margin-top:14px" onclick="copyAddr()">Salin Username</button>
   </div>
@@ -618,11 +621,17 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
   <div class="sheet-title">Beli Crypto</div>
   <div class="sheet-body">
     <div class="form-lbl">Koin</div>
-    <select class="form-input" id="buySymbol" onchange="updateBuyCalc()">
-      <option>BTC</option><option>ETH</option><option>BNB</option><option>SOL</option><option>XRP</option>
-    </select>
+    <!-- custom coin picker for buy -->
+    <button class="coin-picker-btn" id="buyCoinBtn" onclick="openCoinPicker('buy')">
+      <span class="cpb-ico" id="buyCoinIco"></span>
+      <span class="cpb-sym" id="buyCoinSym">BTC</span>
+      <svg class="cpb-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
     <div class="coin-avail">
-      <span class="coin-avail-lbl">🪙 Koin tersedia</span>
+      <span class="coin-avail-lbl" style="display:flex;align-items:center;gap:6px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="15" height="15"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        Koin tersedia
+      </span>
       <span class="coin-avail-val" id="buyCoinsShow">0 koin</span>
     </div>
     <div class="form-lbl">Jumlah koin <span class="form-max" onclick="setMaxBuy()">MAX</span></div>
@@ -638,9 +647,12 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
   <div class="sheet-title">Jual Crypto</div>
   <div class="sheet-body">
     <div class="form-lbl">Koin</div>
-    <select class="form-input" id="sellSymbol" onchange="updateSellCalc()">
-      <option>BTC</option><option>ETH</option><option>BNB</option><option>SOL</option><option>XRP</option>
-    </select>
+    <!-- custom coin picker for sell -->
+    <button class="coin-picker-btn" id="sellCoinBtn" onclick="openCoinPicker('sell')">
+      <span class="cpb-ico" id="sellCoinIco"></span>
+      <span class="cpb-sym" id="sellCoinSym">BTC</span>
+      <svg class="cpb-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
     <div class="coin-avail">
       <span class="coin-avail-lbl">Tersedia</span>
       <span class="coin-avail-val" id="sellBalShow">0</span>
@@ -650,6 +662,13 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
     <div class="form-hint" id="sellHint">= $0.00 → 0 koin</div>
     <button class="primary-btn" onclick="doSell()">Jual</button>
   </div>
+</div>
+
+<!-- COIN PICKER SHEET (shared: send/buy/sell/swap) -->
+<div class="sheet" id="coinPickerSheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-title" id="coinPickerTitle">Pilih Koin</div>
+  <div class="sheet-body" id="coinPickerList"></div>
 </div>
 
 <!-- SWAP PICKER SHEET -->
@@ -664,8 +683,16 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
   <div class="sheet-handle"></div>
   <div class="sheet-title">Scan QR</div>
   <div class="sheet-body">
-    <div class="scan-wrap"><video id="scanVideo" autoplay playsinline muted></video><div class="scan-guide"><div class="scan-box"></div></div></div>
-    <button class="primary-btn" style="margin-top:14px" onclick="stopScanner()">Batal</button>
+    <div class="scan-wrap">
+      <video id="scanVideo" autoplay playsinline muted></video>
+      <div class="scan-window"></div>
+      <div class="scan-guide">
+        <div class="scan-frame">
+          <div class="scan-frame-b"></div>
+        </div>
+      </div>
+    </div>
+    <button class="primary-btn" style="margin-top:14px" onclick="stopScanner();closeSheet()">Batal</button>
   </div>
 </div>
 
@@ -674,7 +701,9 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
   <div class="sheet-handle"></div>
   <div class="sheet-title">Pengaturan</div>
   <div class="sheet-body">
-    <button class="primary-btn" style="background:var(--bg3);color:var(--tx);margin-bottom:10px" onclick="toggleDark();closeSheet()">🌙 Toggle Dark Mode</button>
+    <button class="primary-btn" style="background:var(--bg3);color:var(--tx);margin-bottom:10px" onclick="toggleDark();closeSheet()">
+      Ganti Mode Gelap / Terang
+    </button>
     <button class="primary-btn danger-btn" onclick="doLogout()">Keluar</button>
   </div>
 </div>
@@ -689,14 +718,15 @@ const sb=supabase.createClient(SB_URL,SB_KEY);
 
 // ── ICONS ──
 var ICO={
-  BNB:'<circle cx="22" cy="22" r="22" fill="#F3BA2F"/><path fill="#fff" d="M16.38 19.25L22 13.63l5.63 5.63 3.27-3.27L22 7.09 12.11 16.98l3.27 3.27zM7.09 22l3.27-3.27 3.27 3.27-3.27 3.27zm9.29 2.75L22 30.37l5.63-5.63 3.27 3.27-.01.01L22 36.91 12.11 27.02l-.01-.01 3.28-3.26zM30.91 22l3.27-3.27 3.27 3.27-3.27 3.27zm-4.91 0l-4-3.99L22 18l-.01.01L18 22l4 3.99L22 26l.01-.01L26 22z"/>',
+  BNB:'<circle cx="22" cy="22" r="22" fill="#F3BA2F"/><g transform="translate(22,22)"><path fill="#fff" d="M0,-9.4 L2.82,-6.58 L-2.82,-6.58 Z M-6.58,-2.82 L-3.76,-5.64 L-3.76,0 L-6.58,2.82 Z M6.58,-2.82 L6.58,2.82 L3.76,0 L3.76,-5.64 Z M0,-3.76 L2.82,-0.94 L0,1.88 L-2.82,-0.94 Z M-6.58,5.64 L-3.76,2.82 L0,6.58 L3.76,2.82 L6.58,5.64 L0,12.22 Z"/></g>',
   BTC:'<circle cx="22" cy="22" r="22" fill="#F7931A"/><path d="M29.6 19.3c.4-2.6-1.6-4-4.3-4.9l.9-3.5-2.1-.5-.9 3.4c-.6-.1-1.1-.3-1.7-.4l.9-3.4-2.1-.5-.9 3.5-1.4-.3-2.9-.7-.6 2.2s1.6.4 1.5.4c.8.2.9.7.9 1.2l-2.2 8.6c-.1.2-.3.6-.8.4l-1.5-.4-1 2.4 2.7.7 1.5.4-.9 3.6 2.1.5.9-3.5c.6.1 1.1.3 1.7.4l-.9 3.5 2.1.5.9-3.6c3.6.7 6.3.4 7.4-2.8.9-2.6 0-4.1-1.9-5.1 1.4-.3 2.4-1.2 2.6-3zm-4.8 6.7c-.6 2.6-5.1 1.2-6.5.8l1.1-4.6c1.4.4 6.1 1.1 5.4 3.8zm.6-6.8c-.6 2.3-4.3 1.2-5.5.9l1-4.2c1.2.3 5.1.9 4.5 3.3z" fill="#fff"/>',
   ETH:'<circle cx="22" cy="22" r="22" fill="#627EEA"/><path d="M22 8v10.9l8.9 4-8.9-14.9z" fill="#fff" fill-opacity=".7"/><path d="M22 8l-8.9 14.9 8.9-4V8z" fill="#fff"/><path d="M22 27.7v6.3l8.9-12.3-8.9 6z" fill="#fff" fill-opacity=".7"/><path d="M22 34v-6.3l-8.9-6L22 34z" fill="#fff"/><path d="M22 26.1l8.9-5-8.9-4v9z" fill="#fff" fill-opacity=".45"/><path d="M13.1 21.1l8.9 5v-9l-8.9 4z" fill="#fff" fill-opacity=".7"/>',
-  SOL:'<circle cx="22" cy="22" r="22" fill="#000"/><linearGradient id="sg" x1="11" y1="29" x2="33" y2="15" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#00FFA3"/><stop offset="1" stop-color="#DC1FFF"/></linearGradient><path d="M14.5 26.6a1 1 0 01.7-.3h18.3a.5.5 0 01.35.85l-3.4 3.4a1 1 0 01-.7.3H11.45a.5.5 0 01-.35-.85zm0-13.1a1 1 0 01.7-.3h18.3a.5.5 0 01.35.85l-3.4 3.4a1 1 0 01-.7.3H11.45a.5.5 0 01-.35-.85zM29.8 20a1 1 0 00-.7-.3H10.8a.5.5 0 00-.35.85l3.4 3.4a1 1 0 00.7.3h18.3a.5.5 0 00.35-.85z" fill="url(#sg)"/>',
+  SOL:'<circle cx="22" cy="22" r="22" fill="#000"/><defs><linearGradient id="sg" x1="11" y1="29" x2="33" y2="15" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#00FFA3"/><stop offset="1" stop-color="#DC1FFF"/></linearGradient></defs><path d="M14.5 26.6a1 1 0 0 1 .7-.3h18.3a.5.5 0 0 1 .35.85l-3.4 3.4a1 1 0 0 1-.7.3H11.45a.5.5 0 0 1-.35-.85zm0-13.1a1 1 0 0 1 .7-.3h18.3a.5.5 0 0 1 .35.85l-3.4 3.4a1 1 0 0 1-.7.3H11.45a.5.5 0 0 1-.35-.85zM29.8 20a1 1 0 0 0-.7-.3H10.8a.5.5 0 0 0-.35.85l3.4 3.4a1 1 0 0 0 .7.3h18.3a.5.5 0 0 0 .35-.85z" fill="url(#sg)"/>',
   XRP:'<circle cx="22" cy="22" r="22" fill="#23292F"/><path d="M29.8 13h3.4l-6.9 6.8c-2.4 2.4-6.2 2.4-8.6 0L10.8 13h3.4l5.2 5.1c1.4 1.4 3.7 1.4 5.1 0L29.8 13zm-15.7 18h-3.4l7-6.9c2.4-2.4 6.2-2.4 8.6 0l6.9 6.9h-3.4l-5.2-5.2c-1.4-1.4-3.7-1.4-5.1 0L14.1 31z" fill="#fff"/>'
 };
 
 var COINS=['BTC','ETH','BNB','SOL','XRP'];
+var COIN_NAMES={BTC:'Bitcoin',ETH:'Ethereum',BNB:'BNB Smart Chain',SOL:'Solana',XRP:'XRP'};
 var PRICES={BTC:64000,ETH:1730,BNB:589,SOL:74,XRP:0.52};
 var CHANGES={BTC:0.76,ETH:0.22,BNB:0.39,SOL:3.28,XRP:1.45};
 var IDS={BTC:'BTCUSDT',ETH:'ETHUSDT',BNB:'BNBUSDT',SOL:'SOLUSDT',XRP:'XRPUSDT'};
@@ -718,11 +748,15 @@ var swapPickerTarget='from';
 var swapFrom='BTC',swapTo='ETH';
 var scanStream=null;
 var scanTimer=null;
+var coinPickerContext=''; // 'send','buy','sell'
+
+// Current selected coin per context
+var sendSym='BTC',buySym='BTC',sellSym='BTC';
 
 // ── HELPERS ──
 function fmtP(p){if(p>=1000)return'$'+p.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});if(p>=1)return'$'+p.toFixed(2);return'$'+p.toFixed(4);}
 function fmtV(v){return'$'+v.toFixed(2);}
-function ico(sym,size){return'<svg viewBox="0 0 44 44" width="'+size+'" height="'+size+'">'+(ICO[sym]||'')+'</svg>';}
+function icoSvg(sym,size){return'<svg viewBox="0 0 44 44" width="'+size+'" height="'+size+'" style="display:block">'+(ICO[sym]||'')+'</svg>';}
 function vib(ms){if(navigator.vibrate)navigator.vibrate(ms);}
 function fmtAmt(n){if(n===0)return'0';if(n<0.0001)return n.toFixed(8);if(n<0.01)return n.toFixed(6);if(n<1)return n.toFixed(4);return n.toFixed(4);}
 function fmtTime(ts){var d=new Date(ts);return d.toLocaleDateString('id-ID',{day:'numeric',month:'short'})+' '+d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});}
@@ -744,6 +778,50 @@ function applyDark(){
   el.innerHTML=dark?'<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>':'<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
 }
 function toggleDark(){dark=!dark;applyDark();vib(10);}
+
+// ── CUSTOM COIN PICKER ──
+function renderCoinPickerBtn(context,sym){
+  var icoEl=document.getElementById(context+'CoinIco');
+  var symEl=document.getElementById(context+'CoinSym');
+  if(icoEl)icoEl.innerHTML=icoSvg(sym,28);
+  if(symEl)symEl.textContent=sym;
+}
+function openCoinPicker(context){
+  coinPickerContext=context;
+  var titles={send:'Pilih Koin',buy:'Pilih Koin untuk Dibeli',sell:'Pilih Koin untuk Dijual'};
+  document.getElementById('coinPickerTitle').textContent=titles[context]||'Pilih Koin';
+  var curSym=context==='send'?sendSym:context==='buy'?buySym:sellSym;
+  document.getElementById('coinPickerList').innerHTML=COINS.map(function(c){
+    var isActive=c===curSym;
+    return'<div onclick="pickCoin(\''+c+'\')" style="display:flex;align-items:center;gap:13px;padding:14px 0;cursor:pointer;border-bottom:1px solid var(--bg3);'+(isActive?'opacity:1':'opacity:.85')+'">'
+      +'<div style="width:44px;height:44px;border-radius:50%;overflow:hidden;flex-shrink:0">'+icoSvg(c,44)+'</div>'
+      +'<div style="flex:1"><div style="font-size:15px;font-weight:800;color:var(--tx)">'+c+'</div><div style="font-size:12px;color:var(--tx2);margin-top:2px">'+COIN_NAMES[c]+'</div></div>'
+      +'<div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--tx)">'+fmtAmt(holdings[c]||0)+'</div>'
+      +(isActive?'<div style="width:20px;height:20px;border-radius:50%;background:var(--nav);display:flex;align-items:center;justify-content:center;margin-left:auto;margin-top:4px"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" width="12" height="12"><polyline points="20 6 9 17 4 12"/></svg></div>':'')
+      +'</div>'
+      +'</div>';
+  }).join('');
+  openSheet('coinPickerSheet');
+}
+function pickCoin(sym){
+  closeSheet();
+  if(coinPickerContext==='send'){
+    sendSym=sym;
+    renderCoinPickerBtn('send',sym);
+    document.getElementById('sendSymLabel').textContent=sym;
+    document.getElementById('sendBalShow').textContent=fmtAmt(holdings[sym]||0)+' '+sym;
+    document.getElementById('sendAmt').value='';
+    updateSendUsd();
+  } else if(coinPickerContext==='buy'){
+    buySym=sym;
+    renderCoinPickerBtn('buy',sym);
+    updateBuyCalc();
+  } else if(coinPickerContext==='sell'){
+    sellSym=sym;
+    renderCoinPickerBtn('sell',sym);
+    updateSellCalc();
+  }
+}
 
 // ── AUTH ──
 var authMode='login';
@@ -806,22 +884,6 @@ function setTab(tab){
 }
 
 // ── HOME ──
-function renderWallet(list){
-  var wrap=document.getElementById('assetList');
-  if(!list||!list.length){wrap.innerHTML='<div class="empty-state"><div class="e-title">Belum ada aset</div><div class="e-sub">Beli crypto dengan koin quest kamu</div></div>';return;}
-  wrap.innerHTML=list.map(function(a,i){
-    var up=a.change>=0;
-    var hold=holdings[a.sym]||0;
-    var val=hold*PRICES[a.sym];
-    return'<div class="a-row" style="animation:fadeUp .45s '+(0.05*i)+'s cubic-bezier(.22,1,.36,1) both" onclick="openDetail(\''+a.sym+'\')">'
-      +'<div class="a-ico">'+ico(a.sym,46)+'</div>'
-      +'<div class="a-left"><div class="a-sym-row"><span class="a-sym">'+a.sym+'</span><span class="a-badge">'+a.name+'</span></div>'
-      +'<div class="a-sub-row"><span class="a-price" id="wp_'+a.sym+'">'+fmtP(a.price)+'</span><span class="a-chg '+(up?'up':'dn')+'" id="wc_'+a.sym+'">'+(up?'+':'')+a.change.toFixed(2)+'%</span></div></div>'
-      +'<div class="a-right"><div class="a-hold">'+fmtAmt(hold)+'</div><div class="a-val">'+fmtV(val)+'</div></div>'
-      +'</div>';
-  }).join('');
-}
-
 var WALLET=[
   {id:'BNBUSDT',sym:'BNB',name:'BNB Smart Chain',price:589,change:0.39},
   {id:'BTCUSDT',sym:'BTC',name:'Bitcoin',price:64000,change:0.76},
@@ -830,10 +892,25 @@ var WALLET=[
   {id:'XRPUSDT',sym:'XRP',name:'XRP',price:0.52,change:1.45}
 ];
 
+function renderWallet(list){
+  var wrap=document.getElementById('assetList');
+  if(!list||!list.length){wrap.innerHTML='<div class="empty-state"><div class="e-title">Belum ada aset</div><div class="e-sub">Beli crypto dengan koin quest kamu</div></div>';return;}
+  wrap.innerHTML=list.map(function(a,i){
+    var up=a.change>=0;
+    var hold=holdings[a.sym]||0;
+    var val=hold*PRICES[a.sym];
+    return'<div class="a-row" style="animation:fadeUp .45s '+(0.05*i)+'s cubic-bezier(.22,1,.36,1) both" onclick="openDetail(\''+a.sym+'\')">'
+      +'<div class="a-ico">'+icoSvg(a.sym,46)+'</div>'
+      +'<div class="a-left"><div class="a-sym-row"><span class="a-sym">'+a.sym+'</span><span class="a-badge">'+a.name+'</span></div>'
+      +'<div class="a-sub-row"><span class="a-price" id="wp_'+a.sym+'">'+fmtP(a.price)+'</span><span class="a-chg '+(up?'up':'dn')+'" id="wc_'+a.sym+'">'+(up?'+':'')+a.change.toFixed(2)+'%</span></div></div>'
+      +'<div class="a-right"><div class="a-hold">'+fmtAmt(hold)+'</div><div class="a-val">'+fmtV(val)+'</div></div>'
+      +'</div>';
+  }).join('');
+}
+
 function updateHeroBalance(){
   var total=WALLET.reduce(function(s,a){return s+(holdings[a.sym]||0)*PRICES[a.sym];},0);
   document.getElementById('totalBalance').textContent=fmtV(total);
-  document.getElementById('heroCoinsVal').textContent=(curProfile?curProfile.coins.toFixed(0):0)+' koin';
   document.getElementById('profCoins').textContent=curProfile?curProfile.coins.toFixed(0):'0';
 }
 
@@ -844,7 +921,6 @@ function onSearch(q){
 }
 
 // ── MARKETS ──
-var mktSort='all';
 function setMktSort(s){
   mktSort=s;
   ['all','gainers','losers'].forEach(function(k){var b=document.getElementById('sb_'+k);if(b)b.className='sort-btn'+(k===s?' active':'');});
@@ -858,7 +934,7 @@ function renderMarket(){
   wrap.innerHTML=list.map(function(a,i){
     var up=a.change>=0,sign=up?'+':'';
     return'<div class="a-row" style="animation:fadeUp .35s '+(0.04*i)+'s cubic-bezier(.22,1,.36,1) both" onclick="openDetail(\''+a.sym+'\')">'
-      +'<div class="a-ico">'+ico(a.sym,46)+'</div>'
+      +'<div class="a-ico">'+icoSvg(a.sym,46)+'</div>'
       +'<div class="a-left"><div class="a-sym-row"><span class="a-sym">'+a.sym+'</span><span class="a-badge">'+a.name+'</span></div>'
       +'<div class="a-sub-row"><span class="a-price" id="mp_'+a.sym+'">'+fmtP(a.price)+'</span><span class="a-chg '+(up?'up':'dn')+'" id="mc_'+a.sym+'">'+sign+a.change.toFixed(2)+'%</span></div></div>'
       +'<div class="a-right"><div class="a-hold" style="font-size:13px;color:var(--tx3);font-weight:600">24h</div>'
@@ -868,8 +944,12 @@ function renderMarket(){
 }
 async function fetchMarketPrices(){
   await Promise.allSettled(WALLET.map(async function(a){
-    try{var r=await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol='+a.id);var d=await r.json();
-      if(d.lastPrice){a.price=parseFloat(d.lastPrice);PRICES[a.sym]=a.price;a.change=parseFloat(d.priceChangePercent)||0;CHANGES[a.sym]=a.change;
+    try{
+      var r=await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol='+a.id);
+      var d=await r.json();
+      if(d.lastPrice){
+        a.price=parseFloat(d.lastPrice);PRICES[a.sym]=a.price;
+        a.change=parseFloat(d.priceChangePercent)||0;CHANGES[a.sym]=a.change;
         ['mp_','wp_'].forEach(function(p){var e=document.getElementById(p+a.sym);if(e)e.textContent=fmtP(a.price);});
         ['mc_','wc_'].forEach(function(p){var e=document.getElementById(p+a.sym);if(e){e.textContent=(a.change>=0?'+':'')+a.change.toFixed(2)+'%';e.className='a-chg '+(a.change>=0?'up':'dn');}});
       }
@@ -883,8 +963,12 @@ function renderFavorite(){
   var favs=WALLET.filter(function(a){return stars.indexOf(a.sym)>=0;});
   var wrap=document.getElementById('favoriteList');
   if(!favs.length){wrap.innerHTML='<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><div class="e-title">Belum ada favorit</div><div class="e-sub">Tap bintang di detail aset</div></div>';return;}
-  wrap.innerHTML=favs.map(function(a,i){var up=a.change>=0;
-    return'<div class="a-row" onclick="openDetail(\''+a.sym+'\')">'+'<div class="a-ico">'+ico(a.sym,46)+'</div>'+'<div class="a-left"><div class="a-sym-row"><span class="a-sym">'+a.sym+'</span><span class="a-badge">'+a.name+'</span></div><div class="a-sub-row"><span class="a-price">'+fmtP(a.price)+'</span><span class="a-chg '+(up?'up':'dn')+'">'+(up?'+':'')+a.change.toFixed(2)+'%</span></div></div>'+'<div class="a-right"><div class="a-hold" style="font-size:13px;color:var(--tx3)">24h</div><div class="a-val" style="color:'+(up?'var(--gtext)':'var(--rtext)')+';font-weight:700">'+(up?'+':'')+a.change.toFixed(2)+'%</div></div></div>';
+  wrap.innerHTML=favs.map(function(a){var up=a.change>=0;
+    return'<div class="a-row" onclick="openDetail(\''+a.sym+'\')">'
+      +'<div class="a-ico">'+icoSvg(a.sym,46)+'</div>'
+      +'<div class="a-left"><div class="a-sym-row"><span class="a-sym">'+a.sym+'</span><span class="a-badge">'+a.name+'</span></div><div class="a-sub-row"><span class="a-price">'+fmtP(a.price)+'</span><span class="a-chg '+(up?'up':'dn')+'">'+(up?'+':'')+a.change.toFixed(2)+'%</span></div></div>'
+      +'<div class="a-right"><div class="a-hold" style="font-size:13px;color:var(--tx3)">24h</div><div class="a-val" style="color:'+(up?'var(--gtext)':'var(--rtext)')+';font-weight:700">'+(up?'+':'')+a.change.toFixed(2)+'%</div></div>'
+      +'</div>';
   }).join('');
 }
 
@@ -893,7 +977,7 @@ function openDetail(sym){
   var a=WALLET.find(function(x){return x.sym===sym;});
   if(!a)return;
   curAsset=a;vib(8);
-  document.getElementById('detIco').innerHTML=ico(a.sym,52);
+  document.getElementById('detIco').innerHTML=icoSvg(a.sym,52);
   document.getElementById('detName').textContent=a.sym;
   document.getElementById('detSub').textContent=a.name;
   document.getElementById('detPrice').textContent=fmtP(a.price);
@@ -909,7 +993,7 @@ function openDetail(sym){
   starEl.querySelector('svg').setAttribute('fill',starred?'#F4B728':'none');
   starEl.querySelector('svg').setAttribute('stroke',starred?'#F4B728':'currentColor');
   curRange='1W';
-  document.querySelectorAll('.time-btn').forEach(function(b){b.classList.toggle('active',b.textContent==='1W'&&!b.id);});
+  document.querySelectorAll('.time-btn').forEach(function(b){b.classList.remove('active');if(b.textContent==='1W')b.classList.add('active');});
   document.querySelector('.det-scroll').scrollTop=0;
   document.getElementById('detPage').classList.add('open');
   document.body.style.overflow='hidden';
@@ -931,8 +1015,11 @@ function toggleStar(){
   showToast(on?sym+' ditambahkan ke Favorite':sym+' dihapus dari Favorite');vib(10);
 }
 async function fetchOnePrice(a){
-  try{var r=await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol='+a.id);var d=await r.json();
-    if(d.lastPrice){a.price=parseFloat(d.lastPrice);PRICES[a.sym]=a.price;a.change=parseFloat(d.priceChangePercent)||0;
+  try{
+    var r=await fetch('https://api.binance.com/api/v3/ticker/24hr?symbol='+a.id);
+    var d=await r.json();
+    if(d.lastPrice){
+      a.price=parseFloat(d.lastPrice);PRICES[a.sym]=a.price;a.change=parseFloat(d.priceChangePercent)||0;
       document.getElementById('detPrice').textContent=fmtP(a.price);
       var e=document.getElementById('detChg');e.textContent=(a.change>=0?'+':'')+a.change.toFixed(2)+'%';e.className='det-chg '+(a.change>=0?'up':'dn');
     }
@@ -942,12 +1029,15 @@ async function fetchOnePrice(a){
 // ── CHART ──
 var BINT={live:'1m','1m':'1m','1H':'1h','1D':'1d','1W':'4h','1Mo':'1d'};
 var BLIMIT={live:60,'1m':60,'1H':60,'1D':30,'1W':42,'1Mo':30};
-var ICO_LINE='<polyline points="2 14 6 8 10 11 14 5 18 9"/>';
-var ICO_CANDLE='<line x1="4" y1="2" x2="4" y2="4"/><rect x="2" y="4" width="4" height="7" rx="0.5"/><line x1="4" y1="11" x2="4" y2="14"/><line x1="10" y1="5" x2="10" y2="7"/><rect x="8" y="7" width="4" height="6" rx="0.5"/><line x1="10" y1="13" x2="10" y2="16"/><line x1="16" y1="3" x2="16" y2="6"/><rect x="14" y="6" width="4" height="5" rx="0.5"/><line x1="16" y1="11" x2="16" y2="14"/>';
 function toggleChartType(){
   chartType=chartType==='line'?'candle':'line';
-  document.getElementById('chartTypeIco').innerHTML=chartType==='candle'?ICO_LINE:ICO_CANDLE;
-  if(curAsset&&chartCache[curAsset.sym+'_'+curRange])drawChart(curAsset,chartCache[curAsset.sym+'_'+curRange]);
+  var ico=document.getElementById('chartTypeIco');
+  if(chartType==='candle'){
+    ico.innerHTML='<polyline points="2 14 6 8 10 11 14 5 18 9"/>';
+  }else{
+    ico.innerHTML='<line x1="4" y1="2" x2="4" y2="4"/><rect x="2" y="4" width="4" height="7" rx="0.5"/><line x1="4" y1="11" x2="4" y2="14"/><line x1="10" y1="5" x2="10" y2="7"/><rect x="8" y="7" width="4" height="6" rx="0.5"/><line x1="10" y1="13" x2="10" y2="16"/><line x1="16" y1="3" x2="16" y2="6"/><rect x="14" y="6" width="4" height="5" rx="0.5"/><line x1="16" y1="11" x2="16" y2="14"/>';
+  }
+  if(curAsset&&chartCache[curAsset.sym+'_'+curRange])drawChart(curAsset,chartCache[curAsset.sym+'_'+curRange].prices);
 }
 function setRange(btn,range){
   document.querySelectorAll('.time-btn').forEach(function(b){b.classList.remove('active');});
@@ -977,7 +1067,6 @@ async function loadChart(asset,range){
   document.getElementById('chartLoading').style.display='none';
 }
 function drawChart(asset,prices){
-  if(prices&&prices.ts)prices=prices.prices; // compat
   var canvas=document.getElementById('detCanvas');
   var dpr=window.devicePixelRatio||1,W=canvas.offsetWidth,H=canvas.offsetHeight||200;
   canvas.width=W*dpr;canvas.height=H*dpr;
@@ -1037,83 +1126,84 @@ function closeSheet(){
 
 // ── SEND ──
 function openSend(sym){
-  if(sym)document.getElementById('sendSymbol').value=sym;
-  updateSendBal();
+  if(sym){sendSym=sym;}
+  renderCoinPickerBtn('send',sendSym);
+  document.getElementById('sendSymLabel').textContent=sendSym;
+  document.getElementById('sendBalShow').textContent=fmtAmt(holdings[sendSym]||0)+' '+sendSym;
+  document.getElementById('sendAmt').value='';
+  document.getElementById('sendTo').value='';
+  updateSendUsd();
   document.getElementById('sendSheet').classList.add('open');
   document.body.style.overflow='hidden';
 }
 function closeSendPage(){
+  stopScanner();
   document.getElementById('sendSheet').classList.remove('open');
   document.body.style.overflow='';
 }
-function updateSendBal(){
-  var sym=document.getElementById('sendSymbol').value;
-  document.getElementById('sendBalShow').textContent=fmtAmt(holdings[sym]||0)+' '+sym;
-  var lbl=document.getElementById('sendSymLabel');if(lbl)lbl.textContent=sym;
-  var title=document.getElementById('sendPageTitle');if(title)title.textContent='Kirim '+sym;
-}
 function setMaxSend(){
-  var sym=document.getElementById('sendSymbol').value;
-  document.getElementById('sendAmt').value=fmtAmt(holdings[sym]||0);
+  document.getElementById('sendAmt').value=fmtAmt(holdings[sendSym]||0);
   updateSendUsd();
 }
 function updateSendUsd(){
-  var sym=document.getElementById('sendSymbol').value;
   var amt=parseFloat(document.getElementById('sendAmt').value)||0;
-  document.getElementById('sendUsdHint').textContent='≈ '+fmtV(amt*PRICES[sym]);
+  document.getElementById('sendUsdHint').textContent='≈ '+fmtV(amt*PRICES[sendSym]);
 }
 async function doSend(){
-  var sym=document.getElementById('sendSymbol').value;
   var toUser=document.getElementById('sendTo').value.trim().replace('@','').toLowerCase();
   var amt=parseFloat(document.getElementById('sendAmt').value)||0;
   if(!toUser){showToast('Isi username tujuan','err');return;}
   if(amt<=0){showToast('Isi jumlah','err');return;}
-  if((holdings[sym]||0)<amt){showToast('Saldo tidak cukup','err');return;}
+  if((holdings[sendSym]||0)<amt){showToast('Saldo tidak cukup','err');return;}
   if(toUser===curProfile.username){showToast('Tidak bisa kirim ke diri sendiri','err');return;}
   var {data:target}=await sb.from('profiles').select('id,username').eq('username',toUser).single();
   if(!target){showToast('User tidak ditemukan','err');return;}
-  // deduct sender
-  var newHold=(holdings[sym]||0)-amt;
-  await sb.from('holdings').upsert({user_id:curUser.id,symbol:sym,amount:newHold,updated_at:new Date().toISOString()});
-  // add receiver
-  var {data:targetHold}=await sb.from('holdings').select('amount').eq('user_id',target.id).eq('symbol',sym).single();
+  var newHold=(holdings[sendSym]||0)-amt;
+  await sb.from('holdings').upsert({user_id:curUser.id,symbol:sendSym,amount:newHold,updated_at:new Date().toISOString()});
+  var {data:targetHold}=await sb.from('holdings').select('amount').eq('user_id',target.id).eq('symbol',sendSym).single();
   var tAmt=(targetHold?targetHold.amount:0)+amt;
-  await sb.from('holdings').upsert({user_id:target.id,symbol:sym,amount:tAmt,updated_at:new Date().toISOString()});
-  // log tx
-  await sb.from('transactions').insert({user_id:curUser.id,type:'send',symbol:sym,amount:amt,price_usd:PRICES[sym],to_user_id:target.id});
-  await sb.from('transactions').insert({user_id:target.id,type:'receive',symbol:sym,amount:amt,price_usd:PRICES[sym],from_user_id:curUser.id});
-  holdings[sym]=newHold;
+  await sb.from('holdings').upsert({user_id:target.id,symbol:sendSym,amount:tAmt,updated_at:new Date().toISOString()});
+  await sb.from('transactions').insert({user_id:curUser.id,type:'send',symbol:sendSym,amount:amt,price_usd:PRICES[sendSym],to_user_id:target.id});
+  await sb.from('transactions').insert({user_id:target.id,type:'receive',symbol:sendSym,amount:amt,price_usd:PRICES[sendSym],from_user_id:curUser.id});
+  holdings[sendSym]=newHold;
   updateHeroBalance();renderWallet(WALLET);
   closeSendPage();
-  showToast('Berhasil kirim '+fmtAmt(amt)+' '+sym+' ke @'+toUser,'ok');
+  showToast('Berhasil kirim '+fmtAmt(amt)+' '+sendSym+' ke @'+toUser,'ok');
 }
 
-// ── RECEIVE ──
+// ── RECEIVE ── 
 async function openReceive(){
   openSheet('receiveSheet');
   var username=curProfile?curProfile.username:'unknown';
   var qrData='xentra://send?to='+username;
   document.getElementById('qrAddr').textContent='@'+username;
-  var canvas=document.getElementById('qrCanvas');
-  try{await QRCode.toCanvas(canvas,qrData,{width:200,margin:1,color:{dark:'#000',light:'#fff'}});}catch(e){}
+  // wait for sheet to be visible before drawing QR
+  setTimeout(async function(){
+    var canvas=document.getElementById('qrCanvas');
+    try{
+      await QRCode.toCanvas(canvas,qrData,{width:200,margin:2,color:{dark:'#000000',light:'#ffffff'}});
+    }catch(e){console.error('QR error',e);}
+  },150);
 }
 function copyAddr(){
-  navigator.clipboard&&navigator.clipboard.writeText(curProfile?curProfile.username:'');
+  var text=curProfile?curProfile.username:'';
+  if(navigator.clipboard){navigator.clipboard.writeText(text).catch(function(){});}
   showToast('Username disalin!');
 }
 
 // ── SCANNER ──
 async function openScanner(){
+  // close send page overlay first, open scanner sheet
   openSheet('scannerSheet');
   try{
-    var stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
+    var stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment',width:{ideal:640},height:{ideal:640}}});
     scanStream=stream;
     var video=document.getElementById('scanVideo');
     video.srcObject=stream;
-    video.play();
+    await video.play();
     var cvs=document.createElement('canvas');
     scanTimer=setInterval(function(){
-      if(video.readyState===video.HAVE_ENOUGH_DATA){
+      if(video.readyState===video.HAVE_ENOUGH_DATA&&video.videoWidth>0){
         cvs.width=video.videoWidth;cvs.height=video.videoHeight;
         var ctx=cvs.getContext('2d');ctx.drawImage(video,0,0);
         var img=ctx.getImageData(0,0,cvs.width,cvs.height);
@@ -1122,85 +1212,88 @@ async function openScanner(){
           var url=code.data;
           var match=url.match(/xentra:\/\/send\?to=([^&]+)/);
           if(match){
+            stopScanner();
+            closeSheet();
             document.getElementById('sendTo').value='@'+match[1];
-            stopScanner();closeSheet();
             showToast('QR berhasil discan!','ok');
           }
         }
       }
     },300);
-  }catch(e){showToast('Tidak bisa akses kamera','err');}
+  }catch(e){
+    showToast('Tidak bisa akses kamera','err');
+    closeSheet();
+  }
 }
 function stopScanner(){
   if(scanTimer){clearInterval(scanTimer);scanTimer=null;}
   if(scanStream){scanStream.getTracks().forEach(function(t){t.stop();});scanStream=null;}
-  var v=document.getElementById('scanVideo');if(v)v.srcObject=null;
+  var v=document.getElementById('scanVideo');if(v){v.pause();v.srcObject=null;}
 }
 
 // ── BUY ──
 function openBuySheet(sym){
-  if(sym&&sym!=='undefined'){document.getElementById('buySymbol').value=sym;}
+  if(sym&&sym!=='undefined'){buySym=sym;}
+  renderCoinPickerBtn('buy',buySym);
   document.getElementById('buyCoinsShow').textContent=(curProfile?curProfile.coins.toFixed(0):0)+' koin';
+  document.getElementById('buyCoins').value='';
   updateBuyCalc();
   openSheet('buySheet');
 }
 function setMaxBuy(){document.getElementById('buyCoins').value=curProfile?Math.floor(curProfile.coins):'';updateBuyCalc();}
 function updateBuyCalc(){
-  var sym=document.getElementById('buySymbol').value;
   var coins=parseFloat(document.getElementById('buyCoins').value)||0;
-  var crypto=coins/PRICES[sym];
-  document.getElementById('buyHint').textContent='= '+fmtAmt(crypto)+' '+sym;
+  var crypto=coins/PRICES[buySym];
+  document.getElementById('buyHint').textContent='= '+fmtAmt(crypto)+' '+buySym;
 }
 async function doBuy(){
-  var sym=document.getElementById('buySymbol').value;
   var coins=parseFloat(document.getElementById('buyCoins').value)||0;
   if(coins<=0){showToast('Isi jumlah koin','err');return;}
   if(coins>curProfile.coins){showToast('Koin tidak cukup','err');return;}
-  var crypto=coins/PRICES[sym];
+  var crypto=coins/PRICES[buySym];
   var newCoins=curProfile.coins-coins;
-  var newHold=(holdings[sym]||0)+crypto;
+  var newHold=(holdings[buySym]||0)+crypto;
   await sb.from('profiles').update({coins:newCoins}).eq('id',curUser.id);
-  await sb.from('holdings').upsert({user_id:curUser.id,symbol:sym,amount:newHold,updated_at:new Date().toISOString()});
-  await sb.from('transactions').insert({user_id:curUser.id,type:'buy',symbol:sym,amount:crypto,price_usd:PRICES[sym],coins_used:coins});
-  curProfile.coins=newCoins;holdings[sym]=newHold;
+  await sb.from('holdings').upsert({user_id:curUser.id,symbol:buySym,amount:newHold,updated_at:new Date().toISOString()});
+  await sb.from('transactions').insert({user_id:curUser.id,type:'buy',symbol:buySym,amount:crypto,price_usd:PRICES[buySym],coins_used:coins});
+  curProfile.coins=newCoins;holdings[buySym]=newHold;
   updateHeroBalance();renderWallet(WALLET);
   closeSheet();
-  showToast('Berhasil beli '+fmtAmt(crypto)+' '+sym,'ok');
+  showToast('Berhasil beli '+fmtAmt(crypto)+' '+buySym,'ok');
 }
 
 // ── SELL ──
 function openSellSheet(sym){
-  if(sym&&sym!=='undefined'){document.getElementById('sellSymbol').value=sym;}
-  updateSellCalc();openSheet('sellSheet');
+  if(sym&&sym!=='undefined'){sellSym=sym;}
+  renderCoinPickerBtn('sell',sellSym);
+  updateSellCalc();
+  openSheet('sellSheet');
 }
 function updateSellCalc(){
-  var sym=document.getElementById('sellSymbol').value;
   var amt=parseFloat(document.getElementById('sellAmt').value)||0;
-  var usd=amt*PRICES[sym];
-  document.getElementById('sellBalShow').textContent=fmtAmt(holdings[sym]||0)+' '+sym;
+  var usd=amt*PRICES[sellSym];
+  document.getElementById('sellBalShow').textContent=fmtAmt(holdings[sellSym]||0)+' '+sellSym;
   document.getElementById('sellHint').textContent='= '+fmtV(usd)+' → '+Math.floor(usd)+' koin';
 }
 function setMaxSell(){
-  var sym=document.getElementById('sellSymbol').value;
-  document.getElementById('sellAmt').value=fmtAmt(holdings[sym]||0);
+  document.getElementById('sellAmt').value=fmtAmt(holdings[sellSym]||0);
   updateSellCalc();
 }
 async function doSell(){
-  var sym=document.getElementById('sellSymbol').value;
   var amt=parseFloat(document.getElementById('sellAmt').value)||0;
   if(amt<=0){showToast('Isi jumlah','err');return;}
-  if((holdings[sym]||0)<amt){showToast('Saldo tidak cukup','err');return;}
-  var usd=amt*PRICES[sym];
+  if((holdings[sellSym]||0)<amt){showToast('Saldo tidak cukup','err');return;}
+  var usd=amt*PRICES[sellSym];
   var coins=Math.floor(usd);
-  var newHold=(holdings[sym]||0)-amt;
+  var newHold=(holdings[sellSym]||0)-amt;
   var newCoins=curProfile.coins+coins;
   await sb.from('profiles').update({coins:newCoins}).eq('id',curUser.id);
-  await sb.from('holdings').upsert({user_id:curUser.id,symbol:sym,amount:newHold,updated_at:new Date().toISOString()});
-  await sb.from('transactions').insert({user_id:curUser.id,type:'sell',symbol:sym,amount:amt,price_usd:PRICES[sym],coins_used:-coins});
-  curProfile.coins=newCoins;holdings[sym]=newHold;
+  await sb.from('holdings').upsert({user_id:curUser.id,symbol:sellSym,amount:newHold,updated_at:new Date().toISOString()});
+  await sb.from('transactions').insert({user_id:curUser.id,type:'sell',symbol:sellSym,amount:amt,price_usd:PRICES[sellSym],coins_used:-coins});
+  curProfile.coins=newCoins;holdings[sellSym]=newHold;
   updateHeroBalance();renderWallet(WALLET);
   closeSheet();
-  showToast('Berhasil jual '+fmtAmt(amt)+' '+sym+' → +'+coins+' koin','ok');
+  showToast('Berhasil jual '+fmtAmt(amt)+' '+sellSym+' → +'+coins+' koin','ok');
 }
 
 // ── SWAP ──
@@ -1231,10 +1324,11 @@ function openSwapPicker(target){
   document.getElementById('swapPickerTitle').textContent=target==='from'?'Pilih Koin Asal':'Pilih Koin Tujuan';
   var other=target==='from'?swapTo:swapFrom;
   document.getElementById('swapPickerList').innerHTML=COINS.filter(function(c){return c!==other;}).map(function(c){
-    return'<div class="a-row" onclick="pickSwapCoin(\''+c+'\')" style="cursor:pointer">'
-      +'<div class="a-ico">'+ico(c,46)+'</div>'
-      +'<div class="a-left"><div class="a-sym">'+c+'</div><div style="font-size:12px;color:var(--tx3);margin-top:4px">'+fmtAmt(holdings[c]||0)+' tersedia</div></div>'
-      +'<div style="font-size:14px;font-weight:700;color:var(--tx)">'+fmtP(PRICES[c])+'</div></div>';
+    return'<div onclick="pickSwapCoin(\''+c+'\')" style="display:flex;align-items:center;gap:13px;padding:14px 0;cursor:pointer;border-bottom:1px solid var(--bg3);">'
+      +'<div style="width:44px;height:44px;border-radius:50%;overflow:hidden;flex-shrink:0">'+icoSvg(c,44)+'</div>'
+      +'<div style="flex:1"><div style="font-size:15px;font-weight:800;color:var(--tx)">'+c+'</div><div style="font-size:12px;color:var(--tx2);margin-top:2px">'+fmtAmt(holdings[c]||0)+' tersedia</div></div>'
+      +'<div style="font-size:14px;font-weight:700;color:var(--tx)">'+fmtP(PRICES[c])+'</div>'
+      +'</div>';
   }).join('');
   openSheet('swapPickerSheet');
 }
@@ -1267,11 +1361,8 @@ async function loadProfile(){
   document.getElementById('profName').textContent='@'+curProfile.username;
   document.getElementById('profEmail').textContent=curUser.email;
   document.getElementById('profCoins').textContent=curProfile.coins.toFixed(0);
-  // quest
   await checkQuest();
-  // leaderboard
   await loadLeaderboard();
-  // tx history
   await loadTxHistory();
 }
 
@@ -1280,14 +1371,16 @@ async function checkQuest(){
   var today=new Date().toISOString().split('T')[0];
   var {data}=await sb.from('quest_logs').select('*').eq('user_id',curUser.id).eq('claimed_at',today).single();
   var btn=document.getElementById('questBtn');
-  var streak=0;
-  if(data){btn.disabled=true;btn.textContent='✓ Sudah diklaim hari ini';streak=data.streak;}
-  else{btn.disabled=false;btn.textContent='Klaim +1 Koin';}
-  // get latest streak
+  if(data){
+    btn.disabled=true;
+    btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg> Sudah diklaim hari ini';
+  }else{
+    btn.disabled=false;
+    btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Klaim +1 Koin';
+  }
   var {data:last}=await sb.from('quest_logs').select('streak').eq('user_id',curUser.id).order('claimed_at',{ascending:false}).limit(1).single();
-  if(last)streak=last.streak;
+  var streak=last?last.streak:0;
   document.getElementById('questStreak').textContent='Streak: '+streak+' hari';
-  // show dot if claimable
   document.getElementById('questDot').style.display=(!data)?'':'none';
 }
 async function claimQuest(){
@@ -1300,8 +1393,9 @@ async function claimQuest(){
   var newCoins=curProfile.coins+coins;
   await sb.from('profiles').update({coins:newCoins}).eq('id',curUser.id);
   curProfile.coins=newCoins;
-  document.getElementById('questBtn').disabled=true;
-  document.getElementById('questBtn').textContent='✓ Sudah diklaim hari ini';
+  var btn=document.getElementById('questBtn');
+  btn.disabled=true;
+  btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg> Sudah diklaim hari ini';
   document.getElementById('questStreak').textContent='Streak: '+streak+' hari';
   document.getElementById('questDot').style.display='none';
   updateHeroBalance();
@@ -1334,11 +1428,11 @@ async function loadTxHistory(){
   var {data:txs}=await sb.from('transactions').select('*').or('user_id.eq.'+curUser.id+',to_user_id.eq.'+curUser.id).order('created_at',{ascending:false}).limit(30);
   if(!txs||!txs.length){document.getElementById('txHistory').innerHTML='<div class="empty-state"><div class="e-sub">Belum ada transaksi</div></div>';return;}
   var typeIcon={
-    buy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
-    sell:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/></svg>',
-    send:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="8 7 17 7 17 16"/></svg>',
-    receive:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="6 13 12 19 18 13"/></svg>',
-    swap:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>'
+    buy:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+    sell:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><line x1="5" y1="12" x2="19" y2="12"/></svg>',
+    send:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="8 7 17 7 17 16"/></svg>',
+    receive:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="6 13 12 19 18 13"/></svg>',
+    swap:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>'
   };
   document.getElementById('txHistory').innerHTML=txs.map(function(t){
     var isPos=t.type==='receive'||t.type==='sell';
@@ -1359,28 +1453,22 @@ function showSettings(){openSheet('settingsSheet');}
 // ── INIT ──
 async function init(){
   applyDark();
+  // init coin picker buttons default state
+  renderCoinPickerBtn('send','BTC');
+  renderCoinPickerBtn('buy','BTC');
+  renderCoinPickerBtn('sell','BTC');
+
   var {data:{session}}=await sb.auth.getSession();
-  if(session){
-    curUser=session.user;
-    await loadUser();
-  }
+  if(session){curUser=session.user;await loadUser();}
   sb.auth.onAuthStateChange(async function(event,session){
-    if(event==='SIGNED_IN'&&session){
-      curUser=session.user;
-      await loadUser();
-    }else if(event==='SIGNED_OUT'){
-      document.getElementById('app').style.display='none';
-      document.getElementById('authScreen').style.display='flex';
-    }
+    if(event==='SIGNED_IN'&&session){curUser=session.user;await loadUser();}
+    else if(event==='SIGNED_OUT'){document.getElementById('app').style.display='none';document.getElementById('authScreen').style.display='flex';}
   });
 }
 
 async function loadUser(){
   var {data:profile}=await sb.from('profiles').select('*').eq('id',curUser.id).single();
-  if(!profile){
-    document.getElementById('authErr').textContent='Profil tidak ditemukan';
-    return;
-  }
+  if(!profile){document.getElementById('authErr').textContent='Profil tidak ditemukan';return;}
   curProfile=profile;
   var {data:holds}=await sb.from('holdings').select('*').eq('user_id',curUser.id);
   holdings={};
@@ -1391,11 +1479,9 @@ async function loadUser(){
   updateHeroBalance();
   fetchMarketPrices();
   setInterval(fetchMarketPrices,30000);
-  // quest dot
   var today=new Date().toISOString().split('T')[0];
   var {data:q}=await sb.from('quest_logs').select('id').eq('user_id',curUser.id).eq('claimed_at',today).single();
   document.getElementById('questDot').style.display=(!q)?'':'none';
-  // init swap icons
   document.getElementById('swapFromIco').innerHTML=ICO[swapFrom]||'';
   document.getElementById('swapToIco').innerHTML=ICO[swapTo]||'';
 }

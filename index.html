@@ -225,6 +225,10 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 .empty-state svg{opacity:.4;margin-bottom:12px;}
 .empty-state .e-title{font-size:15px;font-weight:600;margin-top:4px;}
 .empty-state .e-sub{font-size:13px;margin-top:6px;}
+.empty-center{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;color:var(--tx3);text-align:center;padding:0 32px;}
+.empty-center svg{opacity:.35;margin-bottom:16px;}
+.empty-center .e-title{font-size:16px;font-weight:700;margin-top:4px;color:var(--tx2);}
+.empty-center .e-sub{font-size:13px;margin-top:8px;line-height:1.5;}
 
 /* ── QR ── */
 .qr-wrap{display:flex;flex-direction:column;align-items:center;padding:0 20px 20px;}
@@ -718,7 +722,7 @@ const sb=supabase.createClient(SB_URL,SB_KEY);
 
 // ── ICONS ──
 var ICO={
-  BNB:'<circle cx="22" cy="22" r="22" fill="#F3BA2F"/><path fill="#fff" d="M22 8.75l3.89 3.89-7.64 7.64-3.89-3.89zm-9.25 9.25l3.89 3.89-3.89 3.89-3.89-3.89zm9.25 9.25l3.89 3.89-3.89 3.89-3.89-3.89zm9.25-9.25l3.89 3.89-3.89 3.89-3.89-3.89zM22 18.11l3.89 3.89-3.89 3.89-3.89-3.89z"/>',
+  BNB:'<circle cx="22" cy="22" r="22" fill="#F3BA2F"/><path fill="#fff" d="M13.68 22l-3.43-3.43 3.43-3.43 3.43 3.43zm8.32-8.32l5.79 5.79 3.43-3.43L22 7.57l-9.22 8.47 3.43 3.43zM30.32 22l3.43 3.43-3.43 3.43-3.43-3.43zm-8.32 8.32l-5.79-5.79-3.43 3.43L22 36.43l9.22-8.47-3.43-3.43zM22 25.43L18.57 22 22 18.57 25.43 22z"/>',
   BTC:'<circle cx="22" cy="22" r="22" fill="#F7931A"/><path d="M29.6 19.3c.4-2.6-1.6-4-4.3-4.9l.9-3.5-2.1-.5-.9 3.4c-.6-.1-1.1-.3-1.7-.4l.9-3.4-2.1-.5-.9 3.5-1.4-.3-2.9-.7-.6 2.2s1.6.4 1.5.4c.8.2.9.7.9 1.2l-2.2 8.6c-.1.2-.3.6-.8.4l-1.5-.4-1 2.4 2.7.7 1.5.4-.9 3.6 2.1.5.9-3.5c.6.1 1.1.3 1.7.4l-.9 3.5 2.1.5.9-3.6c3.6.7 6.3.4 7.4-2.8.9-2.6 0-4.1-1.9-5.1 1.4-.3 2.4-1.2 2.6-3zm-4.8 6.7c-.6 2.6-5.1 1.2-6.5.8l1.1-4.6c1.4.4 6.1 1.1 5.4 3.8zm.6-6.8c-.6 2.3-4.3 1.2-5.5.9l1-4.2c1.2.3 5.1.9 4.5 3.3z" fill="#fff"/>',
   ETH:'<circle cx="22" cy="22" r="22" fill="#627EEA"/><path d="M22 8v10.9l8.9 4-8.9-14.9z" fill="#fff" fill-opacity=".7"/><path d="M22 8l-8.9 14.9 8.9-4V8z" fill="#fff"/><path d="M22 27.7v6.3l8.9-12.3-8.9 6z" fill="#fff" fill-opacity=".7"/><path d="M22 34v-6.3l-8.9-6L22 34z" fill="#fff"/><path d="M22 26.1l8.9-5-8.9-4v9z" fill="#fff" fill-opacity=".45"/><path d="M13.1 21.1l8.9 5v-9l-8.9 4z" fill="#fff" fill-opacity=".7"/>',
   SOL:'__SOL__',
@@ -969,7 +973,7 @@ async function fetchMarketPrices(){
 function renderFavorite(){
   var favs=WALLET.filter(function(a){return stars.indexOf(a.sym)>=0;});
   var wrap=document.getElementById('favoriteList');
-  if(!favs.length){wrap.innerHTML='<div class="empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><div class="e-title">Belum ada favorit</div><div class="e-sub">Tap bintang di detail aset</div></div>';return;}
+  if(!favs.length){wrap.innerHTML='<div class="empty-center"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" width="64" height="64"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg><div class="e-title">Belum ada favorit</div><div class="e-sub">Buka detail aset dan tap ikon bintang untuk menambahkan</div></div>';return;}
   wrap.innerHTML=favs.map(function(a){var up=a.change>=0;
     return'<div class="a-row" onclick="openDetail(\''+a.sym+'\')">'
       +'<div class="a-ico">'+icoSvg(a.sym,46)+'</div>'
@@ -1211,14 +1215,18 @@ async function doSend(){
 
 // ── RECEIVE ── 
 function openReceive(){
-  var username=curProfile?curProfile.username:'unknown';
+  if(!curProfile){showToast('Belum login','err');return;}
+  var username=curProfile.username;
   document.getElementById('qrAddr').textContent='@'+username;
-  // generate QR dulu sebelum buka sheet
   var qrData='xentra://send?to='+username;
-  QRCode.toDataURL(qrData,{width:200,margin:2,color:{dark:'#000000',light:'#ffffff'}},function(err,url){
-    if(!err){document.getElementById('qrImg').src=url;}
+  try{
+    QRCode.toDataURL(qrData,{width:200,margin:2,color:{dark:'#000000',light:'#ffffff'}},function(err,url){
+      if(!err&&url){document.getElementById('qrImg').src=url;}
+      openSheet('receiveSheet');
+    });
+  }catch(e){
     openSheet('receiveSheet');
-  });
+  }
 }
 function copyAddr(){
   var text=curProfile?curProfile.username:'';

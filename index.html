@@ -118,7 +118,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 /* ── MODAL / OVERLAY ── */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:300;opacity:0;transition:opacity .25s;pointer-events:none;}
 .overlay.show{opacity:1;pointer-events:auto;}
-.sheet{position:fixed;bottom:0;left:50%;transform:translate(-50%,100%);width:100%;max-width:560px;background:var(--bg);border-radius:28px 28px 0 0;z-index:400;padding:0 0 calc(32px + env(safe-area-inset-bottom));transition:transform .32s cubic-bezier(.22,1,.36,1);}
+.sheet{position:fixed;bottom:0;left:50%;transform:translate(-50%,100%);width:100%;max-width:560px;background:var(--bg);border-radius:28px 28px 0 0;z-index:400;padding:0 0 calc(32px + env(safe-area-inset-bottom));transition:transform .32s cubic-bezier(.22,1,.36,1);touch-action:pan-y;}
 .sheet.open{transform:translate(-50%,0);}
 .sheet-handle{width:36px;height:4px;border-radius:4px;background:var(--bg4);margin:12px auto 20px;}
 .sheet-title{font-size:18px;font-weight:800;color:var(--tx);padding:0 20px 18px;}
@@ -255,7 +255,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 .swap-fp-sym{font-size:15px;font-weight:800;color:var(--tx);}
 .swap-fp-input{flex:1;background:none;border:none;font-size:24px;font-weight:700;color:var(--tx);outline:none;font-family:'Inter',sans-serif;text-align:right;min-width:0;}
 .swap-fp-mid{display:flex;justify-content:center;align-items:center;height:36px;position:relative;z-index:1;}
-.swap-fp-mid-btn{width:36px;height:36px;border-radius:50%;background:var(--bg);border:2px solid var(--bg3);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);}
+.swap-fp-mid-btn{width:36px;height:36px;border-radius:50%;background:var(--bg3);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);}
 .swap-fp-mid-btn svg{width:16px;height:16px;}
 .swap-fp-bal{font-size:12px;color:var(--tx3);margin-top:8px;}
 .swap-fp-rate{text-align:center;font-size:13px;color:var(--tx3);padding:10px 0;}
@@ -406,7 +406,7 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
           </div>
           <div class="swap-fp-bal">Tersedia: <span id="swapToBal">0</span></div>
         </div>
-        <div class="swap-fp-rate" id="swapRate">— pilih koin —</div>
+        <div class="swap-fp-rate" id="swapRate" style="display:none"></div>
         <button class="fp-btn" onclick="doSwap()" style="border-radius:16px;padding:15px;font-size:15px;">Konfirmasi Swap</button>
       </div>
     </div>
@@ -718,10 +718,10 @@ const sb=supabase.createClient(SB_URL,SB_KEY);
 
 // ── ICONS ──
 var ICO={
-  BNB:'<circle cx="22" cy="22" r="22" fill="#F3BA2F"/><g transform="translate(22,22)"><path fill="#fff" d="M0,-9.4 L2.82,-6.58 L-2.82,-6.58 Z M-6.58,-2.82 L-3.76,-5.64 L-3.76,0 L-6.58,2.82 Z M6.58,-2.82 L6.58,2.82 L3.76,0 L3.76,-5.64 Z M0,-3.76 L2.82,-0.94 L0,1.88 L-2.82,-0.94 Z M-6.58,5.64 L-3.76,2.82 L0,6.58 L3.76,2.82 L6.58,5.64 L0,12.22 Z"/></g>',
+  BNB:'<circle cx="22" cy="22" r="22" fill="#F3BA2F"/><path fill="#fff" d="M16.38 19.25L22 13.63l5.63 5.63 3.27-3.27L22 7.09 12.11 16.98l3.27 3.27zM7.09 22l3.27-3.27 3.27 3.27-3.27 3.27zm9.29 2.75L22 30.37l5.63-5.63 3.27 3.27-.01.01L22 36.91 12.11 27.02l-.01-.01 3.28-3.26zM30.91 22l3.27-3.27 3.27 3.27-3.27 3.27zm-4.91 0l-4-3.99L22 18l-.01.01L18 22l4 3.99L22 26l.01-.01L26 22z"/>',
   BTC:'<circle cx="22" cy="22" r="22" fill="#F7931A"/><path d="M29.6 19.3c.4-2.6-1.6-4-4.3-4.9l.9-3.5-2.1-.5-.9 3.4c-.6-.1-1.1-.3-1.7-.4l.9-3.4-2.1-.5-.9 3.5-1.4-.3-2.9-.7-.6 2.2s1.6.4 1.5.4c.8.2.9.7.9 1.2l-2.2 8.6c-.1.2-.3.6-.8.4l-1.5-.4-1 2.4 2.7.7 1.5.4-.9 3.6 2.1.5.9-3.5c.6.1 1.1.3 1.7.4l-.9 3.5 2.1.5.9-3.6c3.6.7 6.3.4 7.4-2.8.9-2.6 0-4.1-1.9-5.1 1.4-.3 2.4-1.2 2.6-3zm-4.8 6.7c-.6 2.6-5.1 1.2-6.5.8l1.1-4.6c1.4.4 6.1 1.1 5.4 3.8zm.6-6.8c-.6 2.3-4.3 1.2-5.5.9l1-4.2c1.2.3 5.1.9 4.5 3.3z" fill="#fff"/>',
   ETH:'<circle cx="22" cy="22" r="22" fill="#627EEA"/><path d="M22 8v10.9l8.9 4-8.9-14.9z" fill="#fff" fill-opacity=".7"/><path d="M22 8l-8.9 14.9 8.9-4V8z" fill="#fff"/><path d="M22 27.7v6.3l8.9-12.3-8.9 6z" fill="#fff" fill-opacity=".7"/><path d="M22 34v-6.3l-8.9-6L22 34z" fill="#fff"/><path d="M22 26.1l8.9-5-8.9-4v9z" fill="#fff" fill-opacity=".45"/><path d="M13.1 21.1l8.9 5v-9l-8.9 4z" fill="#fff" fill-opacity=".7"/>',
-  SOL:'<circle cx="22" cy="22" r="22" fill="#000"/><defs><linearGradient id="sg" x1="11" y1="29" x2="33" y2="15" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#00FFA3"/><stop offset="1" stop-color="#DC1FFF"/></linearGradient></defs><path d="M14.5 26.6a1 1 0 0 1 .7-.3h18.3a.5.5 0 0 1 .35.85l-3.4 3.4a1 1 0 0 1-.7.3H11.45a.5.5 0 0 1-.35-.85zm0-13.1a1 1 0 0 1 .7-.3h18.3a.5.5 0 0 1 .35.85l-3.4 3.4a1 1 0 0 1-.7.3H11.45a.5.5 0 0 1-.35-.85zM29.8 20a1 1 0 0 0-.7-.3H10.8a.5.5 0 0 0-.35.85l3.4 3.4a1 1 0 0 0 .7.3h18.3a.5.5 0 0 0 .35-.85z" fill="url(#sg)"/>',
+  SOL:'__SOL__',
   XRP:'<circle cx="22" cy="22" r="22" fill="#23292F"/><path d="M29.8 13h3.4l-6.9 6.8c-2.4 2.4-6.2 2.4-8.6 0L10.8 13h3.4l5.2 5.1c1.4 1.4 3.7 1.4 5.1 0L29.8 13zm-15.7 18h-3.4l7-6.9c2.4-2.4 6.2-2.4 8.6 0l6.9 6.9h-3.4l-5.2-5.2c-1.4-1.4-3.7-1.4-5.1 0L14.1 31z" fill="#fff"/>'
 };
 
@@ -756,7 +756,14 @@ var sendSym='BTC',buySym='BTC',sellSym='BTC';
 // ── HELPERS ──
 function fmtP(p){if(p>=1000)return'$'+p.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});if(p>=1)return'$'+p.toFixed(2);return'$'+p.toFixed(4);}
 function fmtV(v){return'$'+v.toFixed(2);}
-function icoSvg(sym,size){return'<svg viewBox="0 0 44 44" width="'+size+'" height="'+size+'" style="display:block">'+(ICO[sym]||'')+'</svg>';}
+var _solId=0;
+function icoSvg(sym,size){
+  if(sym==='SOL'){
+    var id='sg'+(++_solId);
+    return'<svg viewBox="0 0 44 44" width="'+size+'" height="'+size+'" style="display:block"><circle cx="22" cy="22" r="22" fill="#000"/><defs><linearGradient id="'+id+'" x1="11" y1="29" x2="33" y2="15" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#00FFA3"/><stop offset="1" stop-color="#DC1FFF"/></linearGradient></defs><path d="M14.5 26.6a1 1 0 0 1 .7-.3h18.3a.5.5 0 0 1 .35.85l-3.4 3.4a1 1 0 0 1-.7.3H11.45a.5.5 0 0 1-.35-.85zm0-13.1a1 1 0 0 1 .7-.3h18.3a.5.5 0 0 1 .35.85l-3.4 3.4a1 1 0 0 1-.7.3H11.45a.5.5 0 0 1-.35-.85zM29.8 20a1 1 0 0 0-.7-.3H10.8a.5.5 0 0 0-.35.85l3.4 3.4a1 1 0 0 0 .7.3h18.3a.5.5 0 0 0 .35-.85z" fill="url(#'+id+')" /></svg>';
+  }
+  return'<svg viewBox="0 0 44 44" width="'+size+'" height="'+size+'" style="display:block">'+(ICO[sym]||'')+'</svg>';
+}
 function vib(ms){if(navigator.vibrate)navigator.vibrate(ms);}
 function fmtAmt(n){if(n===0)return'0';if(n<0.0001)return n.toFixed(8);if(n<0.01)return n.toFixed(6);if(n<1)return n.toFixed(4);return n.toFixed(4);}
 function fmtTime(ts){var d=new Date(ts);return d.toLocaleDateString('id-ID',{day:'numeric',month:'short'})+' '+d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'});}
@@ -1111,16 +1118,37 @@ function drawChart(asset,prices){
 
 // ── SHEET ──
 var activeSheet=null;
+var _sheetStartY=0,_sheetEl=null;
+
 function openSheet(id){
   closeSheet();
   activeSheet=id;
   document.getElementById('overlay').classList.add('show');
-  setTimeout(function(){document.getElementById(id).classList.add('open');},10);
+  setTimeout(function(){
+    var el=document.getElementById(id);
+    el.classList.add('open');
+    // swipe down to close
+    el.addEventListener('touchstart',_sheetTouchStart,{passive:true});
+    el.addEventListener('touchend',_sheetTouchEnd,{passive:true});
+  },10);
+}
+function _sheetTouchStart(e){_sheetStartY=e.touches[0].clientY;}
+function _sheetTouchEnd(e){
+  var dy=e.changedTouches[0].clientY-_sheetStartY;
+  if(dy>80){
+    // swipe down detected
+    if(activeSheet==='scannerSheet')stopScanner();
+    closeSheet();
+  }
 }
 function closeSheet(){
   document.getElementById('overlay').classList.remove('show');
-  document.querySelectorAll('.sheet').forEach(function(s){s.classList.remove('open');});
-  stopScanner();
+  document.querySelectorAll('.sheet').forEach(function(s){
+    s.classList.remove('open');
+    s.removeEventListener('touchstart',_sheetTouchStart);
+    s.removeEventListener('touchend',_sheetTouchEnd);
+  });
+  if(activeSheet==='scannerSheet')stopScanner();
   activeSheet=null;
 }
 
@@ -1172,18 +1200,21 @@ async function doSend(){
 }
 
 // ── RECEIVE ── 
-async function openReceive(){
+function openReceive(){
   openSheet('receiveSheet');
   var username=curProfile?curProfile.username:'unknown';
-  var qrData='xentra://send?to='+username;
   document.getElementById('qrAddr').textContent='@'+username;
-  // wait for sheet to be visible before drawing QR
-  setTimeout(async function(){
-    var canvas=document.getElementById('qrCanvas');
-    try{
-      await QRCode.toCanvas(canvas,qrData,{width:200,margin:2,color:{dark:'#000000',light:'#ffffff'}});
-    }catch(e){console.error('QR error',e);}
-  },150);
+  // clear canvas dulu
+  var canvas=document.getElementById('qrCanvas');
+  var ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  // render QR setelah sheet fully open (transition 320ms)
+  setTimeout(function(){
+    var qrData='xentra://send?to='+username;
+    QRCode.toCanvas(canvas,qrData,{width:200,margin:2,color:{dark:'#000000',light:'#ffffff'}},function(err){
+      if(err)console.error('QR error',err);
+    });
+  },380);
 }
 function copyAddr(){
   var text=curProfile?curProfile.username:'';

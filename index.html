@@ -263,6 +263,45 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 .swap-mid-btn svg{width:18px;height:18px;}
 .swap-rate{text-align:center;font-size:13px;color:var(--tx3);margin:8px 0 16px;}
 
+/* ── FULLPAGE ── */
+.fullpage{position:fixed;inset:0;background:var(--bg);z-index:300;display:flex;flex-direction:column;max-width:560px;margin:0 auto;transform:translateX(100%);transition:transform .32s cubic-bezier(.22,1,.36,1);}
+.fullpage.open{transform:translateX(0);}
+.fp-topbar{display:flex;align-items:center;padding:14px 16px;gap:12px;border-bottom:1px solid var(--bg3);}
+.fp-back{width:40px;height:40px;border-radius:12px;background:none;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx);flex-shrink:0;}
+.fp-back svg{width:22px;height:22px;}
+.fp-title{font-size:17px;font-weight:700;color:var(--tx);flex:1;text-align:center;}
+.fp-spacer{width:40px;flex-shrink:0;}
+.fp-body{flex:1;overflow-y:auto;padding:20px 16px;padding-bottom:100px;}
+.fp-body::-webkit-scrollbar{display:none;}
+.fp-lbl{font-size:13px;font-weight:600;color:var(--tx2);margin-bottom:8px;}
+.fp-input-wrap{background:var(--bg3);border:2px solid transparent;border-radius:16px;padding:14px 16px;margin-bottom:6px;display:flex;align-items:center;gap:10px;transition:border .2s;}
+.fp-input-wrap:focus-within{border-color:var(--nav);}
+.fp-input-wrap input{flex:1;background:none;border:none;font-size:15px;color:var(--tx);outline:none;font-family:'Inter',sans-serif;}
+.fp-input-wrap input::placeholder{color:var(--tx3);}
+.fp-hint{font-size:13px;color:var(--tx3);margin-bottom:18px;}
+.fp-avail{display:flex;align-items:center;justify-content:space-between;padding:10px 0;margin-bottom:14px;border-bottom:1px solid var(--bg3);}
+.fp-avail-lbl{font-size:13px;color:var(--tx2);}
+.fp-avail-val{font-size:14px;font-weight:700;color:var(--tx);}
+.fp-footer{position:absolute;bottom:0;left:0;right:0;padding:16px 16px calc(16px + env(safe-area-inset-bottom));background:var(--bg);}
+.fp-btn{width:100%;padding:16px;background:var(--nav);border:none;border-radius:16px;font-size:16px;font-weight:700;color:#fff;cursor:pointer;font-family:'Inter',sans-serif;}
+.fp-btn:active{opacity:.85;}
+.fp-btn:disabled{opacity:.4;}
+
+/* swap fullpage */
+.swap-fp-box{background:var(--bg3);border-radius:20px;padding:16px;margin-bottom:4px;}
+.swap-fp-lbl{font-size:12px;color:var(--tx3);font-weight:600;margin-bottom:10px;}
+.swap-fp-row{display:flex;align-items:center;gap:10px;}
+.swap-fp-coin{display:flex;align-items:center;gap:8px;background:var(--bg2);border:none;border-radius:12px;padding:8px 12px 8px 8px;cursor:pointer;font-family:'Inter',sans-serif;flex-shrink:0;}
+.swap-fp-coin svg{display:block;}
+.swap-fp-sym{font-size:15px;font-weight:800;color:var(--tx);}
+.swap-fp-input{flex:1;background:none;border:none;font-size:24px;font-weight:700;color:var(--tx);outline:none;font-family:'Inter',sans-serif;text-align:right;min-width:0;}
+.swap-fp-mid{display:flex;justify-content:center;align-items:center;height:36px;position:relative;z-index:1;}
+.swap-fp-mid-btn{width:36px;height:36px;border-radius:50%;background:var(--bg);border:2px solid var(--bg3);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--tx2);}
+.swap-fp-mid-btn svg{width:16px;height:16px;}
+.swap-fp-bal{font-size:12px;color:var(--tx3);margin-top:8px;}
+.swap-fp-rate{text-align:center;font-size:13px;color:var(--tx3);padding:10px 0;}
+.swap-fp-confirm{margin:0 16px;margin-bottom:8px;}
+
 /* ── TOAST ── */
 .toast-wrap{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:999;display:flex;flex-direction:column;gap:8px;align-items:center;pointer-events:none;width:100%;max-width:520px;padding:0 18px;}
 .toast{background:var(--tx);color:var(--bg);font-size:13px;font-weight:600;padding:11px 18px;border-radius:30px;box-shadow:var(--shadow-lg);opacity:0;animation:toastIn .35s cubic-bezier(.22,1,.36,1) forwards;}
@@ -352,39 +391,38 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 
     <!-- SWAP -->
     <div id="swapTab" style="display:none">
-      <div class="sec-hdr"><span class="sec-label">Swap</span></div>
-      <div class="swap-page">
-        <div class="swap-box">
-          <div class="swap-lbl">Dari</div>
-          <div class="swap-row">
-            <button class="swap-coin-btn" id="swapFromBtn" onclick="openSwapPicker('from')">
-              <svg viewBox="0 0 44 44" id="swapFromIco" width="28" height="28"></svg>
-              <span class="swap-coin-sym" id="swapFromSym">BTC</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+      <div style="padding:20px 16px 0;">
+        <div class="swap-fp-box">
+          <div class="swap-fp-lbl">Dari</div>
+          <div class="swap-fp-row">
+            <button class="swap-fp-coin" onclick="openSwapPicker('from')">
+              <svg viewBox="0 0 44 44" id="swapFromIco" width="32" height="32"></svg>
+              <span class="swap-fp-sym" id="swapFromSym">BTC</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13" style="margin-left:2px"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
-            <input class="swap-input" id="swapFromAmt" type="number" placeholder="0" oninput="calcSwap()">
+            <input class="swap-fp-input" id="swapFromAmt" type="number" placeholder="0" oninput="calcSwap()">
           </div>
-          <div style="font-size:12px;color:var(--tx3);margin-top:8px">Tersedia: <span id="swapFromBal">0</span></div>
+          <div class="swap-fp-bal">Tersedia: <span id="swapFromBal">0</span></div>
         </div>
-        <div class="swap-mid">
-          <button class="swap-mid-btn" onclick="swapFlip()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>
+        <div class="swap-fp-mid">
+          <button class="swap-fp-mid-btn" onclick="swapFlip()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><polyline points="6 13 12 19 18 13"/></svg>
           </button>
         </div>
-        <div class="swap-box">
-          <div class="swap-lbl">Ke</div>
-          <div class="swap-row">
-            <button class="swap-coin-btn" id="swapToBtn" onclick="openSwapPicker('to')">
-              <svg viewBox="0 0 44 44" id="swapToIco" width="28" height="28"></svg>
-              <span class="swap-coin-sym" id="swapToSym">ETH</span>
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><polyline points="6 9 12 15 18 9"/></svg>
+        <div class="swap-fp-box">
+          <div class="swap-fp-lbl">Ke</div>
+          <div class="swap-fp-row">
+            <button class="swap-fp-coin" onclick="openSwapPicker('to')">
+              <svg viewBox="0 0 44 44" id="swapToIco" width="32" height="32"></svg>
+              <span class="swap-fp-sym" id="swapToSym">ETH</span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="13" height="13" style="margin-left:2px"><polyline points="6 9 12 15 18 9"/></svg>
             </button>
-            <input class="swap-input" id="swapToAmt" type="number" placeholder="0" readonly>
+            <input class="swap-fp-input" id="swapToAmt" type="number" placeholder="0" readonly style="color:var(--tx2)">
           </div>
-          <div style="font-size:12px;color:var(--tx3);margin-top:8px">Tersedia: <span id="swapToBal">0</span></div>
+          <div class="swap-fp-bal">Tersedia: <span id="swapToBal">0</span></div>
         </div>
-        <div class="swap-rate" id="swapRate">— pilih koin —</div>
-        <button class="primary-btn" onclick="doSwap()">Swap Sekarang</button>
+        <div class="swap-fp-rate" id="swapRate">— pilih koin —</div>
+        <button class="fp-btn" onclick="doSwap()" style="border-radius:16px;padding:15px;font-size:15px;">Konfirmasi Swap</button>
       </div>
     </div>
 
@@ -408,16 +446,16 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
       </div>
       <!-- QUEST -->
       <div style="margin:0 18px 18px;padding:18px;background:var(--bg3);border-radius:20px;">
-        <div style="font-size:15px;font-weight:800;color:var(--tx);margin-bottom:4px">🎯 Quest Harian</div>
+        <div style="font-size:15px;font-weight:800;color:var(--tx);margin-bottom:4px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" style="display:inline;vertical-align:middle;margin-right:6px"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Quest Harian</div>
         <div style="font-size:13px;color:var(--tx2);margin-bottom:14px">Login setiap hari untuk dapat koin gratis!</div>
         <button class="quest-btn" id="questBtn" onclick="claimQuest()">Klaim +1 Koin</button>
         <div class="quest-streak" id="questStreak">Streak: 0 hari</div>
       </div>
       <!-- LEADERBOARD -->
-      <div class="section-title">🏆 Leaderboard</div>
+      <div class="section-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="display:inline;vertical-align:middle;margin-right:6px"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>Leaderboard</div>
       <div id="leaderboard"></div>
       <!-- TX HISTORY -->
-      <div class="section-title">📋 Riwayat Transaksi</div>
+      <div class="section-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="display:inline;vertical-align:middle;margin-right:6px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>Riwayat Transaksi</div>
       <div id="txHistory"></div>
       <!-- LOGOUT -->
       <div style="padding:18px">
@@ -525,25 +563,41 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 <!-- OVERLAY -->
 <div class="overlay" id="overlay" onclick="closeSheet()"></div>
 
-<!-- SEND SHEET -->
-<div class="sheet" id="sendSheet">
-  <div class="sheet-handle"></div>
-  <div class="sheet-title">Kirim Crypto</div>
-  <div class="sheet-body">
-    <div class="form-lbl">Koin</div>
+<!-- SEND FULLPAGE -->
+<div class="fullpage" id="sendSheet">
+  <div class="fp-topbar">
+    <button class="fp-back" onclick="closeSendPage()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <div class="fp-title" id="sendPageTitle">Kirim BTC</div>
+    <div class="fp-spacer"></div>
+  </div>
+  <div class="fp-body">
+    <div class="fp-lbl">Koin</div>
     <select class="form-input" id="sendSymbol" onchange="updateSendBal()">
       <option>BTC</option><option>ETH</option><option>BNB</option><option>SOL</option><option>XRP</option>
     </select>
-    <div class="coin-avail">
-      <span class="coin-avail-lbl">Tersedia</span>
-      <span class="coin-avail-val" id="sendBalShow">0</span>
+    <div class="fp-lbl">Alamat atau Username tujuan</div>
+    <div class="fp-input-wrap">
+      <input id="sendTo" placeholder="@username" autocomplete="off">
+      <button onclick="openScanner()" style="background:none;border:none;cursor:pointer;color:var(--nav);display:flex;align-items:center;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="22" height="22" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/><line x1="7" y1="12" x2="17" y2="12"/></svg>
+      </button>
     </div>
-    <div class="form-lbl">Username tujuan <button class="form-max" onclick="openScanner()">📷 Scan QR</button></div>
-    <input class="form-input" id="sendTo" placeholder="@username" autocomplete="off">
-    <div class="form-lbl">Jumlah <span class="form-max" onclick="setMaxSend()">MAX</span></div>
-    <input class="form-input" id="sendAmt" type="number" placeholder="0.00" oninput="updateSendUsd()">
-    <div class="form-hint" id="sendUsdHint">≈ $0.00</div>
-    <button class="primary-btn" onclick="doSend()">Kirim</button>
+    <div class="fp-lbl" style="margin-top:4px">Jumlah</div>
+    <div class="fp-input-wrap">
+      <input id="sendAmt" type="number" placeholder="0.00" oninput="updateSendUsd()">
+      <span style="font-size:13px;font-weight:700;color:var(--tx2)" id="sendSymLabel">BTC</span>
+      <button onclick="setMaxSend()" style="background:none;border:none;cursor:pointer;color:var(--nav);font-size:13px;font-weight:700;font-family:inherit;margin-left:6px;">Max</button>
+    </div>
+    <div style="font-size:13px;color:var(--tx3);margin-bottom:6px" id="sendUsdHint">≈ $0.00</div>
+    <div class="fp-avail">
+      <span class="fp-avail-lbl">Tersedia</span>
+      <span class="fp-avail-val" id="sendBalShow">0</span>
+    </div>
+  </div>
+  <div class="fp-footer">
+    <button class="fp-btn" onclick="doSend()">Kirim</button>
   </div>
 </div>
 
@@ -982,13 +1036,21 @@ function closeSheet(){
 }
 
 // ── SEND ──
-function openSend(){
+function openSend(sym){
+  if(sym)document.getElementById('sendSymbol').value=sym;
   updateSendBal();
-  openSheet('sendSheet');
+  document.getElementById('sendSheet').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeSendPage(){
+  document.getElementById('sendSheet').classList.remove('open');
+  document.body.style.overflow='';
 }
 function updateSendBal(){
   var sym=document.getElementById('sendSymbol').value;
   document.getElementById('sendBalShow').textContent=fmtAmt(holdings[sym]||0)+' '+sym;
+  var lbl=document.getElementById('sendSymLabel');if(lbl)lbl.textContent=sym;
+  var title=document.getElementById('sendPageTitle');if(title)title.textContent='Kirim '+sym;
 }
 function setMaxSend(){
   var sym=document.getElementById('sendSymbol').value;
@@ -1022,7 +1084,7 @@ async function doSend(){
   await sb.from('transactions').insert({user_id:target.id,type:'receive',symbol:sym,amount:amt,price_usd:PRICES[sym],from_user_id:curUser.id});
   holdings[sym]=newHold;
   updateHeroBalance();renderWallet(WALLET);
-  closeSheet();
+  closeSendPage();
   showToast('Berhasil kirim '+fmtAmt(amt)+' '+sym+' ke @'+toUser,'ok');
 }
 
@@ -1224,7 +1286,7 @@ async function checkQuest(){
   // get latest streak
   var {data:last}=await sb.from('quest_logs').select('streak').eq('user_id',curUser.id).order('claimed_at',{ascending:false}).limit(1).single();
   if(last)streak=last.streak;
-  document.getElementById('questStreak').textContent='🔥 Streak: '+streak+' hari';
+  document.getElementById('questStreak').textContent='Streak: '+streak+' hari';
   // show dot if claimable
   document.getElementById('questDot').style.display=(!data)?'':'none';
 }
@@ -1240,10 +1302,10 @@ async function claimQuest(){
   curProfile.coins=newCoins;
   document.getElementById('questBtn').disabled=true;
   document.getElementById('questBtn').textContent='✓ Sudah diklaim hari ini';
-  document.getElementById('questStreak').textContent='🔥 Streak: '+streak+' hari';
+  document.getElementById('questStreak').textContent='Streak: '+streak+' hari';
   document.getElementById('questDot').style.display='none';
   updateHeroBalance();
-  showToast('🎉 +'+coins+' koin! Streak '+streak+' hari','ok');
+  showToast('+'+coins+' koin! Streak '+streak+' hari','ok');
 }
 
 // ── LEADERBOARD ──

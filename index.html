@@ -765,7 +765,7 @@ var sendSym='BTC',buySym='BTC',sellSym='BTC';
 
 // ── HELPERS ──
 function fmtP(p){if(p>=1000)return'$'+p.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});if(p>=1)return'$'+p.toFixed(2);return'$'+p.toFixed(4);}
-function fmtV(v){return'$'+v.toFixed(2);}
+function fmtV(v){return'$'+v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
 var _solId=0;
 function icoSvg(sym,size){
   if(sym==='SOL'){
@@ -1112,9 +1112,12 @@ function drawChart(asset,prices){
   }else{
     var vals=prices.map(function(p){return p[1];});
     var mn=Math.min.apply(null,vals),mx=Math.max.apply(null,vals),rng=mx-mn||1;
+    // tambah padding 15% atas bawah supaya garis tidak mepet tepi
+    var pad2=rng*0.15;
+    mn=mn-pad2; mx=mx+pad2; rng=mx-mn;
     var up=vals[vals.length-1]>=vals[0];
     var lc=up?(isDark?'#34D873':'#16C172'):(isDark?'#FB4570':'#E11D48');
-    var ft=up?(isDark?'rgba(52,216,115,.22)':'rgba(22,193,114,.18)'):(isDark?'rgba(251,69,112,.22)':'rgba(225,29,72,.14)');
+    var ft=up?(isDark?'rgba(52,216,115,.18)':'rgba(22,193,114,.13)'):(isDark?'rgba(251,69,112,.18)':'rgba(225,29,72,.10)');
     ctx.clearRect(0,0,W,H);
     var pts=prices.map(function(p,i){return{x:pad.l+(i/(prices.length-1))*cw,y:pad.t+(1-(p[1]-mn)/rng)*ch};});
     var grad=ctx.createLinearGradient(0,pad.t,0,H);grad.addColorStop(0,ft);grad.addColorStop(1,'transparent');
@@ -1472,21 +1475,16 @@ async function loadLeaderboard(){
     return{username:p.username,total:total};
   }).sort(function(a,b){return b.total-a.total;});
   if(!totals.length){wrap.innerHTML='<div class="empty-state"><div class="e-sub">Belum ada data</div></div>';return;}
-  // rank icons svg
-  var rankIco=[
-    '<svg viewBox="0 0 24 24" fill="#F4B728" width="22" height="22"><path d="M12 2l2.09 6.26H20l-5 3.64 1.91 5.86L12 14.27 7.09 17.76 9 11.9 4 8.26h5.91z"/></svg>',
-    '<svg viewBox="0 0 24 24" fill="#9CA1B0" width="22" height="22"><path d="M12 2l2.09 6.26H20l-5 3.64 1.91 5.86L12 14.27 7.09 17.76 9 11.9 4 8.26h5.91z"/></svg>',
-    '<svg viewBox="0 0 24 24" fill="#CD7F32" width="22" height="22"><path d="M12 2l2.09 6.26H20l-5 3.64 1.91 5.86L12 14.27 7.09 17.76 9 11.9 4 8.26h5.91z"/></svg>'
-  ];
   var isMe=curProfile?curProfile.username:'';
   wrap.innerHTML=totals.slice(0,20).map(function(u,i){
     var isSelf=u.username===isMe;
-    return'<div style="display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--bg3);'+(isSelf?'background:var(--bdim);margin:0 -16px;padding:14px 16px;border-radius:14px;border-bottom:none;':'')+'">'
-      +'<div style="width:28px;text-align:center;flex-shrink:0">'+(i<3?rankIco[i]:'<span style="font-size:14px;font-weight:800;color:var(--tx3)">'+(i+1)+'</span>')+'</div>'
-      +'<div style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--nav),#8B5CF6);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff;flex-shrink:0">'+u.username[0].toUpperCase()+'</div>'
-      +'<div style="flex:1;min-width:0">'
-        +'<div style="font-size:14px;font-weight:700;color:var(--tx)">@'+u.username+(isSelf?' <span style="font-size:11px;background:var(--nav);color:#fff;padding:2px 7px;border-radius:20px;font-weight:600">Kamu</span>':'')+'</div>'
-        +'<div style="font-size:12px;color:var(--tx2);margin-top:2px">Total aset</div>'
+    var rankColors=['#F4B728','#9CA1B0','#CD7F32'];
+    var rankColor=i<3?rankColors[i]:'var(--tx3)';
+    return'<div style="display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--bg3);'+(isSelf?'background:var(--bdim);margin:0 -16px;padding:14px 16px;':'') +'">'
+      +'<div style="width:28px;text-align:center;flex-shrink:0;font-size:15px;font-weight:900;color:'+rankColor+'">'+(i+1)+'</div>'
+      +'<div style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--nav),#8B5CF6);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#fff;flex-shrink:0">'+u.username[0].toUpperCase()+'</div>'
+      +'<div style="flex:1;min-width:0;display:flex;align-items:center;">'
+        +'<div style="font-size:14px;font-weight:700;color:var(--tx)">@'+u.username+(isSelf?' <span style="font-size:11px;background:var(--nav);color:#fff;padding:2px 7px;border-radius:20px;font-weight:600;vertical-align:middle">Kamu</span>':'')+'</div>'
       +'</div>'
       +'<div style="text-align:right;flex-shrink:0">'
         +'<div style="font-size:15px;font-weight:800;color:var(--tx)">'+fmtV(u.total)+'</div>'

@@ -743,7 +743,7 @@ var ICO={
   BNB:'<circle cx="22" cy="22" r="22" fill="#F3BA2F"/><g fill="#fff"><polygon points="22,9 25.5,12.5 22,16 18.5,12.5"/><polygon points="13.5,17.5 17,14 20.5,17.5 17,21"/><polygon points="22,18.5 25.5,22 22,25.5 18.5,22"/><polygon points="30.5,14 34,17.5 30.5,21 27,17.5"/><polygon points="22,27 25.5,30.5 22,34 18.5,30.5"/></g>',
   BTC:'<circle cx="22" cy="22" r="22" fill="#F7931A"/><path d="M29.6 19.3c.4-2.6-1.6-4-4.3-4.9l.9-3.5-2.1-.5-.9 3.4c-.6-.1-1.1-.3-1.7-.4l.9-3.4-2.1-.5-.9 3.5-1.4-.3-2.9-.7-.6 2.2s1.6.4 1.5.4c.8.2.9.7.9 1.2l-2.2 8.6c-.1.2-.3.6-.8.4l-1.5-.4-1 2.4 2.7.7 1.5.4-.9 3.6 2.1.5.9-3.5c.6.1 1.1.3 1.7.4l-.9 3.5 2.1.5.9-3.6c3.6.7 6.3.4 7.4-2.8.9-2.6 0-4.1-1.9-5.1 1.4-.3 2.4-1.2 2.6-3zm-4.8 6.7c-.6 2.6-5.1 1.2-6.5.8l1.1-4.6c1.4.4 6.1 1.1 5.4 3.8zm.6-6.8c-.6 2.3-4.3 1.2-5.5.9l1-4.2c1.2.3 5.1.9 4.5 3.3z" fill="#fff"/>',
   ETH:'<circle cx="22" cy="22" r="22" fill="#627EEA"/><path d="M22 8v10.9l8.9 4-8.9-14.9z" fill="#fff" fill-opacity=".7"/><path d="M22 8l-8.9 14.9 8.9-4V8z" fill="#fff"/><path d="M22 27.7v6.3l8.9-12.3-8.9 6z" fill="#fff" fill-opacity=".7"/><path d="M22 34v-6.3l-8.9-6L22 34z" fill="#fff"/><path d="M22 26.1l8.9-5-8.9-4v9z" fill="#fff" fill-opacity=".45"/><path d="M13.1 21.1l8.9 5v-9l-8.9 4z" fill="#fff" fill-opacity=".7"/>',
-  SOL:'__SOL__',
+  SOL:'',
   XRP:'<circle cx="22" cy="22" r="22" fill="#23292F"/><path d="M29.8 13h3.4l-6.9 6.8c-2.4 2.4-6.2 2.4-8.6 0L10.8 13h3.4l5.2 5.1c1.4 1.4 3.7 1.4 5.1 0L29.8 13zm-15.7 18h-3.4l7-6.9c2.4-2.4 6.2-2.4 8.6 0l6.9 6.9h-3.4l-5.2-5.2c-1.4-1.4-3.7-1.4-5.1 0L14.1 31z" fill="#fff"/>'
 };
 
@@ -779,12 +779,15 @@ var sendSym='BTC',buySym='BTC',sellSym='BTC';
 function fmtP(p){if(p>=1000)return'$'+p.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});if(p>=1)return'$'+p.toFixed(2);return'$'+p.toFixed(4);}
 function fmtV(v){return'$'+v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});}
 var _solId=0;
-function icoSvg(sym,size){
+function icoInner(sym){
   if(sym==='SOL'){
     var id='sg'+(++_solId);
-    return'<svg viewBox="0 0 44 44" width="'+size+'" height="'+size+'" style="display:block"><circle cx="22" cy="22" r="22" fill="#000"/><defs><linearGradient id="'+id+'" x1="11" y1="29" x2="33" y2="15" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#00FFA3"/><stop offset="1" stop-color="#DC1FFF"/></linearGradient></defs><path d="M14.5 26.6a1 1 0 0 1 .7-.3h18.3a.5.5 0 0 1 .35.85l-3.4 3.4a1 1 0 0 1-.7.3H11.45a.5.5 0 0 1-.35-.85zm0-13.1a1 1 0 0 1 .7-.3h18.3a.5.5 0 0 1 .35.85l-3.4 3.4a1 1 0 0 1-.7.3H11.45a.5.5 0 0 1-.35-.85zM29.8 20a1 1 0 0 0-.7-.3H10.8a.5.5 0 0 0-.35.85l3.4 3.4a1 1 0 0 0 .7.3h18.3a.5.5 0 0 0 .35-.85z" fill="url(#'+id+')" /></svg>';
+    return'<circle cx="22" cy="22" r="22" fill="#000"/><defs><linearGradient id="'+id+'" x1="11" y1="29" x2="33" y2="15" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#00FFA3"/><stop offset="1" stop-color="#DC1FFF"/></linearGradient></defs><path d="M14.5 26.6a1 1 0 0 1 .7-.3h18.3a.5.5 0 0 1 .35.85l-3.4 3.4a1 1 0 0 1-.7.3H11.45a.5.5 0 0 1-.35-.85zm0-13.1a1 1 0 0 1 .7-.3h18.3a.5.5 0 0 1 .35.85l-3.4 3.4a1 1 0 0 1-.7.3H11.45a.5.5 0 0 1-.35-.85zM29.8 20a1 1 0 0 0-.7-.3H10.8a.5.5 0 0 0-.35.85l3.4 3.4a1 1 0 0 0 .7.3h18.3a.5.5 0 0 0 .35-.85z" fill="url(#'+id+')"/>';
   }
-  return'<svg viewBox="0 0 44 44" width="'+size+'" height="'+size+'" style="display:block">'+(ICO[sym]||'')+'</svg>';
+  return ICO[sym]||'';
+}
+function icoSvg(sym,size){
+  return'<svg viewBox="0 0 44 44" width="'+size+'" height="'+size+'" style="display:block">'+icoInner(sym)+'</svg>';
 }
 function vib(ms){if(navigator.vibrate)navigator.vibrate(ms);}
 function fmtAmt(n){if(n===0)return'0';if(n<0.0001)return n.toFixed(8);if(n<0.01)return n.toFixed(6);if(n<1)return n.toFixed(4);return n.toFixed(4);}
@@ -844,10 +847,13 @@ function pickCoin(sym){
   } else if(coinPickerContext==='buy'){
     buySym=sym;
     renderCoinPickerBtn('buy',sym);
+    document.getElementById('buyCoins').value='';
+    document.getElementById('buyCoinsShow').textContent=(curProfile?curProfile.coins.toFixed(0):0)+' koin';
     updateBuyCalc();
   } else if(coinPickerContext==='sell'){
     sellSym=sym;
     renderCoinPickerBtn('sell',sym);
+    document.getElementById('sellAmt').value='';
     updateSellCalc();
   }
 }
@@ -1331,6 +1337,7 @@ async function doBuy(){
 function openSellSheet(sym){
   if(sym&&sym!=='undefined'){sellSym=sym;}
   renderCoinPickerBtn('sell',sellSym);
+  document.getElementById('sellAmt').value='';
   updateSellCalc();
   openSheet('sellSheet');
 }
@@ -1363,8 +1370,8 @@ async function doSell(){
 
 // ── SWAP ──
 function initSwap(){
-  document.getElementById('swapFromIco').innerHTML=ICO[swapFrom]||'';
-  document.getElementById('swapToIco').innerHTML=ICO[swapTo]||'';
+  document.getElementById('swapFromIco').innerHTML=icoInner(swapFrom);
+  document.getElementById('swapToIco').innerHTML=icoInner(swapTo);
   document.getElementById('swapFromSym').textContent=swapFrom;
   document.getElementById('swapToSym').textContent=swapTo;
   document.getElementById('swapFromBal').textContent=fmtAmt(holdings[swapFrom]||0)+' '+swapFrom;
@@ -1568,8 +1575,8 @@ async function loadUser(){
   var today=new Date().toISOString().split('T')[0];
   var {data:q}=await sb.from('quest_logs').select('id').eq('user_id',curUser.id).eq('claimed_at',today).single();
   document.getElementById('questDot').style.display=(!q)?'':'none';
-  document.getElementById('swapFromIco').innerHTML=ICO[swapFrom]||'';
-  document.getElementById('swapToIco').innerHTML=ICO[swapTo]||'';
+  document.getElementById('swapFromIco').innerHTML=icoInner(swapFrom);
+  document.getElementById('swapToIco').innerHTML=icoInner(swapTo);
 }
 
 document.getElementById('mainContent').addEventListener('scroll',function(){

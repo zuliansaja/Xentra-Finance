@@ -423,39 +423,51 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
 
     <!-- PROFILE -->
     <div id="profileTab" style="display:none">
-      <div class="prof-hero">
-        <div class="prof-avatar" id="profAvatar">?</div>
-        <div class="prof-name" id="profName">—</div>
-        <div class="prof-email" id="profEmail">—</div>
-      </div>
-      <div style="margin:0 18px 18px;padding:18px;background:linear-gradient(135deg,#F59E0B,#F4B728);border-radius:20px;">
-        <div style="font-size:13px;font-weight:600;color:rgba(0,0,0,.5)">Koin Tersedia</div>
-        <div style="font-size:32px;font-weight:900;color:#000;margin-top:4px" id="profCoins">0</div>
-        <div style="font-size:12px;color:rgba(0,0,0,.5);margin-top:2px">1 koin = $1 · digunakan untuk beli crypto</div>
-      </div>
-      <!-- QUEST -->
-      <div style="margin:0 18px 18px;padding:18px;background:var(--bg3);border-radius:20px;">
-        <div style="font-size:15px;font-weight:800;color:var(--tx);margin-bottom:4px;display:flex;align-items:center;gap:8px;">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-          Quest Harian
+
+      <!-- HERO: avatar + nama + email -->
+      <div style="padding:28px 20px 20px;display:flex;align-items:center;gap:16px;">
+        <div style="width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--nav),#8B5CF6);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:900;color:#fff;flex-shrink:0;" id="profAvatar">?</div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:18px;font-weight:800;color:var(--tx);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="profName">—</div>
+          <div style="font-size:13px;color:var(--tx2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="profEmail">—</div>
         </div>
-        <div style="font-size:13px;color:var(--tx2);margin-bottom:14px">Login setiap hari untuk dapat koin gratis!</div>
-        <button style="width:100%;padding:13px;background:var(--gold);border:none;border-radius:14px;font-size:14px;font-weight:700;color:#000;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;" id="questBtn" onclick="claimQuest()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-          Klaim +1 Koin
+        <button onclick="doLogout()" style="background:none;border:none;cursor:pointer;color:var(--tx3);display:flex;align-items:center;padding:8px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="20" height="20"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
         </button>
-        <div style="font-size:12px;color:var(--tx3);margin-top:10px;text-align:center" id="questStreak">Streak: 0 hari</div>
       </div>
-      <!-- TX HISTORY -->
-      <div class="section-title">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16" style="display:inline;vertical-align:middle;margin-right:6px"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
-        Riwayat Transaksi
+
+      <!-- KOIN + QUEST dalam satu baris -->
+      <div style="display:flex;gap:12px;padding:0 18px 16px;">
+        <!-- koin card -->
+        <div style="flex:1;background:linear-gradient(135deg,#F59E0B,#F4B728);border-radius:20px;padding:16px;">
+          <div style="font-size:11px;font-weight:700;color:rgba(0,0,0,.45);text-transform:uppercase;letter-spacing:.04em;">Koin</div>
+          <div style="font-size:28px;font-weight:900;color:#000;margin-top:4px;line-height:1;" id="profCoins">0</div>
+          <div style="font-size:11px;color:rgba(0,0,0,.4);margin-top:4px;">1 koin = $1</div>
+        </div>
+        <!-- streak card -->
+        <div style="flex:1;background:var(--bg3);border-radius:20px;padding:16px;display:flex;flex-direction:column;justify-content:space-between;">
+          <div style="font-size:11px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.04em;">Streak</div>
+          <div style="font-size:28px;font-weight:900;color:var(--tx);margin-top:4px;line-height:1;" id="questStreakNum">0</div>
+          <div style="font-size:11px;color:var(--tx3);margin-top:4px;">hari berturut</div>
+        </div>
+      </div>
+
+      <!-- QUEST CLAIM BUTTON -->
+      <div style="padding:0 18px 20px;">
+        <button id="questBtn" onclick="claimQuest()" style="width:100%;padding:15px;background:var(--gold);border:none;border-radius:16px;font-size:15px;font-weight:700;color:#000;cursor:pointer;font-family:'Inter',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity .15s;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          Klaim Koin Harian
+        </button>
+        <div style="font-size:12px;color:var(--tx3);text-align:center;margin-top:8px;" id="questStreak">Login tiap hari untuk streak bonus</div>
+      </div>
+
+      <!-- RIWAYAT TRANSAKSI -->
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 18px 10px;">
+        <span style="font-size:16px;font-weight:800;color:var(--tx);">Riwayat</span>
       </div>
       <div id="txHistory"></div>
-      <!-- LOGOUT -->
-      <div style="padding:18px">
-        <button class="primary-btn danger-btn" onclick="doLogout()">Keluar</button>
-      </div>
+      <div style="height:20px;"></div>
+
     </div>
   </div>
 
@@ -1423,15 +1435,17 @@ async function checkQuest(){
   var {data}=await sb.from('quest_logs').select('*').eq('user_id',curUser.id).eq('claimed_at',today).single();
   var btn=document.getElementById('questBtn');
   if(data){
-    btn.disabled=true;
-    btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg> Sudah diklaim hari ini';
+    btn.disabled=true;btn.style.opacity='.5';
+    btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="18" height="18"><polyline points="20 6 9 17 4 12"/></svg> Sudah diklaim hari ini';
   }else{
-    btn.disabled=false;
-    btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Klaim +1 Koin';
+    btn.disabled=false;btn.style.opacity='1';
+    btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="18" height="18" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg> Klaim Koin Harian';
   }
   var {data:last}=await sb.from('quest_logs').select('streak').eq('user_id',curUser.id).order('claimed_at',{ascending:false}).limit(1).single();
   var streak=last?last.streak:0;
-  document.getElementById('questStreak').textContent='Streak: '+streak+' hari';
+  var sn=document.getElementById('questStreakNum');if(sn)sn.textContent=streak;
+  var ss=document.getElementById('questStreak');
+  if(ss)ss.textContent=data?'Sudah klaim hari ini · Streak '+streak+' hari':'Login tiap hari untuk streak bonus';
   document.getElementById('questDot').style.display=(!data)?'':'none';
 }
 async function claimQuest(){
@@ -1445,9 +1459,10 @@ async function claimQuest(){
   await sb.from('profiles').update({coins:newCoins}).eq('id',curUser.id);
   curProfile.coins=newCoins;
   var btn=document.getElementById('questBtn');
-  btn.disabled=true;
-  btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg> Sudah diklaim hari ini';
-  document.getElementById('questStreak').textContent='Streak: '+streak+' hari';
+  btn.disabled=true;btn.style.opacity='.5';
+  btn.innerHTML='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" width="18" height="18"><polyline points="20 6 9 17 4 12"/></svg> Sudah diklaim hari ini';
+  var sn=document.getElementById('questStreakNum');if(sn)sn.textContent=streak;
+  var ss=document.getElementById('questStreak');if(ss)ss.textContent='Sudah klaim hari ini · Streak '+streak+' hari';
   document.getElementById('questDot').style.display='none';
   updateHeroBalance();
   showToast('+'+coins+' koin! Streak '+streak+' hari','ok');

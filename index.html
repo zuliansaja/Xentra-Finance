@@ -541,8 +541,8 @@ body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg);color:var
         </div>
       </div>
       <div class="det-actions">
-        <button class="det-act-btn det-act-buy" onclick="openBuySheet(curAsset&&curAsset.id)">Beli</button>
-        <button class="det-act-btn det-act-sell" onclick="openSellSheet(curAsset&&curAsset.id)">Jual</button>
+        <button class="det-act-btn det-act-buy" onclick="openBuySheet(curAsset&&curAsset.sym)">Beli</button>
+        <button class="det-act-btn det-act-sell" onclick="openSellSheet(curAsset&&curAsset.sym)">Jual</button>
       </div>
     </div>
   </div>
@@ -740,7 +740,7 @@ const sb=supabase.createClient(SB_URL,SB_KEY);
 
 // ── ICONS ──
 var ICO={
-  BNB:'<circle cx="22" cy="22" r="22" fill="#F3BA2F"/><path fill="#fff" d="M22 10.5l3.18 3.18-3.18 3.18-3.18-3.18zm-7.5 2.5l3.18 3.18L22 13l-4.32-4.32zm11.82 0L22 8.68 17.68 13l3.14 3.14L22 17.32l1.18-1.18zM14.5 22l3.18 3.18L22 20.86l4.32 4.32L22 29.5l-7.5-7.5zm15 0L22 29.5l4.32-4.32 3.18-3.18zM22 24.68l-3.18 3.18L22 31.04l3.18-3.18zM22 13l-1.18 1.18L22 15.36l1.18-1.18z"/>',
+  BNB:'<circle cx="22" cy="22" r="22" fill="#F3BA2F"/><g fill="#fff"><polygon points="22,9 25.5,12.5 22,16 18.5,12.5"/><polygon points="13.5,17.5 17,14 20.5,17.5 17,21"/><polygon points="22,18.5 25.5,22 22,25.5 18.5,22"/><polygon points="30.5,14 34,17.5 30.5,21 27,17.5"/><polygon points="22,27 25.5,30.5 22,34 18.5,30.5"/></g>',
   BTC:'<circle cx="22" cy="22" r="22" fill="#F7931A"/><path d="M29.6 19.3c.4-2.6-1.6-4-4.3-4.9l.9-3.5-2.1-.5-.9 3.4c-.6-.1-1.1-.3-1.7-.4l.9-3.4-2.1-.5-.9 3.5-1.4-.3-2.9-.7-.6 2.2s1.6.4 1.5.4c.8.2.9.7.9 1.2l-2.2 8.6c-.1.2-.3.6-.8.4l-1.5-.4-1 2.4 2.7.7 1.5.4-.9 3.6 2.1.5.9-3.5c.6.1 1.1.3 1.7.4l-.9 3.5 2.1.5.9-3.6c3.6.7 6.3.4 7.4-2.8.9-2.6 0-4.1-1.9-5.1 1.4-.3 2.4-1.2 2.6-3zm-4.8 6.7c-.6 2.6-5.1 1.2-6.5.8l1.1-4.6c1.4.4 6.1 1.1 5.4 3.8zm.6-6.8c-.6 2.3-4.3 1.2-5.5.9l1-4.2c1.2.3 5.1.9 4.5 3.3z" fill="#fff"/>',
   ETH:'<circle cx="22" cy="22" r="22" fill="#627EEA"/><path d="M22 8v10.9l8.9 4-8.9-14.9z" fill="#fff" fill-opacity=".7"/><path d="M22 8l-8.9 14.9 8.9-4V8z" fill="#fff"/><path d="M22 27.7v6.3l8.9-12.3-8.9 6z" fill="#fff" fill-opacity=".7"/><path d="M22 34v-6.3l-8.9-6L22 34z" fill="#fff"/><path d="M22 26.1l8.9-5-8.9-4v9z" fill="#fff" fill-opacity=".45"/><path d="M13.1 21.1l8.9 5v-9l-8.9 4z" fill="#fff" fill-opacity=".7"/>',
   SOL:'__SOL__',
@@ -1307,7 +1307,8 @@ function openBuySheet(sym){
 function setMaxBuy(){document.getElementById('buyCoins').value=curProfile?Math.floor(curProfile.coins):'';updateBuyCalc();}
 function updateBuyCalc(){
   var coins=parseFloat(document.getElementById('buyCoins').value)||0;
-  var crypto=coins/PRICES[buySym];
+  var price=PRICES[buySym]||0;
+  var crypto=price>0?coins/price:0;
   document.getElementById('buyHint').textContent='= '+fmtAmt(crypto)+' '+buySym;
 }
 async function doBuy(){

@@ -858,13 +858,18 @@ function pickCoin(sym){
     buySym=sym;
     renderCoinPickerBtn('buy',sym);
     document.getElementById('buyCoins').value='';
-    document.getElementById('buyCoinsShow').textContent=(curProfile?curProfile.coins.toFixed(0):0)+' koin';
+    document.getElementById('buyHint').textContent='= 0 '+sym;
+    document.getElementById('buyCoinsShow').textContent=(curProfile?Math.floor(curProfile.coins):0)+' koin';
     updateBuyCalc();
+    // buka kembali buySheet setelah closeSheet menutupnya
+    setTimeout(function(){openSheet('buySheet');},50);
   } else if(coinPickerContext==='sell'){
     sellSym=sym;
     renderCoinPickerBtn('sell',sym);
     document.getElementById('sellAmt').value='';
     updateSellCalc();
+    // buka kembali sellSheet setelah closeSheet menutupnya
+    setTimeout(function(){openSheet('sellSheet');},50);
   }
 }
 

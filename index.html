@@ -1321,11 +1321,16 @@ function stopScanner(){
 
 // ── BUY ──
 function openBuySheet(sym){
-  if(sym&&sym!=='undefined'&&sym!==null){buySym=sym;}
+  // set buySym dulu sebelum apapun
+  var s=typeof sym==='string'&&sym!=='undefined'&&sym.length>0?sym:buySym;
+  buySym=s;
   renderCoinPickerBtn('buy',buySym);
-  document.getElementById('buyCoinsShow').textContent=(curProfile?curProfile.coins.toFixed(0):0)+' koin';
-  document.getElementById('buyCoins').value='';
-  document.getElementById('buyHint').textContent='= 0 '+buySym;
+  var coinsEl=document.getElementById('buyCoinsShow');
+  var inputEl=document.getElementById('buyCoins');
+  var hintEl=document.getElementById('buyHint');
+  if(coinsEl)coinsEl.textContent=(curProfile?Math.floor(curProfile.coins):0)+' koin';
+  if(inputEl)inputEl.value='';
+  if(hintEl)hintEl.textContent='= 0 '+buySym;
   updateBuyCalc();
   openSheet('buySheet');
 }
